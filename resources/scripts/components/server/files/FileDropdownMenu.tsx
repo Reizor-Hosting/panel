@@ -109,12 +109,26 @@ interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
     $danger?: boolean;
 }
 
-const Row = ({ icon, title, ...props }: RowProps) => (
-    <StyledRow {...props}>
-        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth />
-        <span css={tw`ml-2`}>{title}</span>
-    </StyledRow>
-);
+const Row = ({ icon, title, onClick, ...props }: RowProps) => {
+    const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        // Close the menu first by finding the menu container
+        const menuContainer = e.currentTarget.closest('[data-dropdown-menu]') as HTMLElement;
+        if (menuContainer && (menuContainer as any).__closeMenu) {
+            (menuContainer as any).__closeMenu();
+        }
+        // Then execute the onClick handler
+        if (onClick) {
+            onClick(e);
+        }
+    };
+
+    return (
+        <StyledRow {...props} onClick={handleClick}>
+            <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth />
+            <span css={tw`ml-2`}>{title}</span>
+        </StyledRow>
+    );
+};
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);

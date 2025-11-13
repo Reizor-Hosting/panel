@@ -87,11 +87,16 @@ interface State {
 class DropdownMenu extends React.PureComponent<Props, State> {
     menu = createRef<HTMLDivElement>();
     buttonContainer = createRef<HTMLDivElement>();
+    menuElement: HTMLDivElement | null = null;
 
     state: State = {
         posX: 0,
         posY: 0,
         visible: false,
+    };
+
+    close = () => {
+        this.setState({ visible: false });
     };
 
     componentWillUnmount() {
@@ -102,7 +107,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         if (this.state.visible && !prevState.visible) {
             // Use setTimeout to ensure the menu is mounted and ref is set, and to add listener after click
             setTimeout(() => {
-                const menu = this.menu.current;
+                const menu = this.menuElement;
                 const button = this.buttonContainer.current;
                 if (menu && button) {
                     // Calculate position relative to viewport for fixed positioning
@@ -157,7 +162,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
     contextMenuListener = () => this.setState({ visible: false });
 
     windowListener = (e: MouseEvent) => {
-        const menu = this.menu.current;
+        const menu = this.menuElement;
 
         if (e.button === 2 || !this.state.visible || !menu) {
             return;
@@ -184,17 +189,34 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         const menuContent = (
             <Fade timeout={150} in={this.state.visible} unmountOnExit>
                 <div
-                    ref={this.menu}
+                    data-dropdown-menu
                     onMouseDown={(e) => {
                         // Prevent the windowListener from closing the menu when clicking inside
                         e.stopPropagation();
                     }}
                     onClick={(e) => {
-                        e.stopPropagation();
-                        // Close menu when clicking on menu items (buttons)
                         const target = e.target as HTMLElement;
-                        if (target.tagName === 'BUTTON' || target.closest('button')) {
+                        const menu = this.menuElement;
+
+                        if (!menu) return;
+
+                        // Don't close if clicking directly on the menu container (empty padding)
+                        if (target === menu) {
+                            e.stopPropagation();
+                            return;
+                        }
+
+                        // Close menu on any click inside
+                        // Use setTimeout to allow child onClick handlers to fire first
+                        setTimeout(() => {
                             this.setState({ visible: false });
+                        }, 0);
+                        e.stopPropagation();
+                    }}
+                    ref={(el) => {
+                        this.menuElement = el;
+                        if (el) {
+                            (el as any).__closeMenu = this.close;
                         }
                     }}
                     style={{
