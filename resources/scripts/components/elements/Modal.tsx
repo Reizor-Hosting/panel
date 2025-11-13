@@ -22,7 +22,8 @@ export interface ModalProps extends RequiredModalProps {
 
 export const ModalMask = styled.div`
     ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
 `;
 
 const ModalContainer = styled.div<{ alignTop?: boolean }>`
@@ -42,11 +43,19 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     margin-bottom: auto;
 
     & > .close-icon {
-        ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
+        ${tw`absolute right-0 p-2 cursor-pointer transition-all duration-300`};
         top: -2.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        background: rgba(33, 33, 33, 0.8);
+        border: 1px solid rgba(211, 47, 66, 0.3);
+        border-radius: 0.5rem;
+        backdrop-filter: blur(10px);
 
         &:hover {
-            ${tw`transform rotate-90`}
+            ${tw`transform rotate-90`};
+            color: rgba(255, 255, 255, 1);
+            background: rgba(211, 47, 66, 0.2);
+            border-color: rgba(211, 47, 66, 0.5);
         }
 
         & > svg {
@@ -123,14 +132,24 @@ const Modal: React.FC<ModalProps> = ({
                         <Fade timeout={150} appear in>
                             <div
                                 css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                                style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
+                                style={{
+                                    background: 'rgba(33, 33, 33, 0.8)',
+                                    backdropFilter: 'blur(10px)',
+                                    zIndex: 9999,
+                                }}
                             >
                                 <Spinner />
                             </div>
                         </Fade>
                     )}
                     <div
-                        css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}
+                        css={tw`p-3 sm:p-4 md:p-6 rounded overflow-y-scroll transition-all duration-300`}
+                        style={{
+                            background: 'rgba(33, 33, 33, 0.95)',
+                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(211, 47, 66, 0.2)',
+                            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(211, 47, 66, 0.1)',
+                        }}
                     >
                         {children}
                     </div>

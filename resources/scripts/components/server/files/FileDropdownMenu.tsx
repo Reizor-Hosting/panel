@@ -36,9 +36,71 @@ import { Dialog } from '@/components/elements/dialog';
 type ModalType = 'rename' | 'move' | 'chmod';
 
 const StyledRow = styled.div<{ $danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded`};
-    ${(props) =>
-        props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
+    ${tw`p-2 flex items-center rounded w-full relative overflow-hidden cursor-pointer`};
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 150ms ease;
+    background: transparent;
+    border: none;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: ${(props) => (props.$danger ? 'rgba(211, 47, 66, 0.15)' : 'rgba(211, 47, 66, 0.1)')};
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            ${(props) => (props.$danger ? 'rgba(211, 47, 66, 0.3)' : 'rgba(211, 47, 66, 0.25)')},
+            transparent
+        );
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    & > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    &:hover {
+        color: rgba(255, 255, 255, 0.95);
+
+        &::before {
+            left: 100%;
+        }
+
+        &::after {
+            width: 100%;
+        }
+    }
+
+    &:active {
+        ${(props) =>
+            props.$danger
+                ? `
+            background: rgba(211, 47, 66, 0.25);
+        `
+                : `
+            background: rgba(211, 47, 66, 0.2);
+        `};
+    }
 `;
 
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {

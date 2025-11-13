@@ -72,7 +72,13 @@ export default ({
                         open={open}
                         onClose={onDialogClose}
                     >
-                        <div className={'fixed inset-0 bg-gray-900/50 z-40'} />
+                        <div
+                            className={'fixed inset-0 z-40'}
+                            style={{
+                                background: 'rgba(0, 0, 0, 0.75)',
+                                backdropFilter: 'blur(4px)',
+                            }}
+                        />
                         <div className={'fixed inset-0 overflow-y-auto z-50'}>
                             <div
                                 ref={container}
@@ -98,7 +104,12 @@ export default ({
                                                         <HDialog.Title className={styles.title}>{title}</HDialog.Title>
                                                     )}
                                                     {description && (
-                                                        <HDialog.Description>{description}</HDialog.Description>
+                                                        <HDialog.Description
+                                                            className={'text-gray-300 mt-1'}
+                                                            style={{ color: 'rgba(255, 255, 255, 0.7)' }}
+                                                        >
+                                                            {description}
+                                                        </HDialog.Description>
                                                     )}
                                                 </div>
                                             </div>

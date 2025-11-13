@@ -3,12 +3,16 @@
 }
 
 .panel {
-    @apply relative bg-gray-600 rounded max-w-xl w-full mx-auto shadow-lg text-left;
-    @apply ring-4 ring-gray-800 ring-opacity-80;
+    @apply relative rounded max-w-xl w-full mx-auto shadow-lg text-left;
+    background: rgba(33, 33, 33, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(211, 47, 66, 0.1);
 }
 
 .title {
-    @apply font-header text-xl font-medium mb-2 text-gray-50 pr-4;
+    @apply font-header text-xl font-medium mb-2 pr-4;
+    color: rgba(255, 255, 255, 0.95);
 }
 
 .close_icon {
@@ -19,7 +23,9 @@
     @apply flex items-center justify-center w-10 h-10 rounded-full mr-4;
 
     &.danger {
-        @apply bg-red-500 text-red-50;
+        background: rgba(211, 47, 66, 0.2);
+        color: rgba(211, 47, 66, 1);
+        border: 1px solid rgba(211, 47, 66, 0.4);
     }
 
     &.warning {
@@ -31,6 +37,8 @@
     }
 
     &.info {
-        @apply bg-primary-500 text-primary-50;
+        background: rgba(211, 47, 66, 0.2);
+        color: rgba(211, 47, 66, 1);
+        border: 1px solid rgba(211, 47, 66, 0.4);
     }
 }
