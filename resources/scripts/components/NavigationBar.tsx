@@ -16,9 +16,9 @@ import Avatar from '@/components/Avatar';
 const NavContainer = styled.div<{ $sidebarCollapsed?: boolean; $hasSidebar?: boolean }>`
     ${tw`fixed top-0 right-0 left-0 z-50`};
     backdrop-filter: blur(20px) saturate(180%);
-    background: linear-gradient(180deg, rgba(28, 28, 28, 0.95) 0%, rgba(24, 24, 24, 0.95) 100%);
-    border-bottom: 1px solid rgba(211, 47, 66, 0.15);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.05);
+    background: linear-gradient(180deg, rgba(33, 33, 33, 0.95) 0%, rgba(24, 24, 24, 0.95) 100%);
+    border-bottom: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.05), inset 0 -1px 0 rgba(211, 47, 66, 0.1);
     height: 3.5rem;
     left: 0;
 
@@ -32,15 +32,32 @@ const NavContent = styled.div`
     padding: 0 1rem;
     max-width: 100%;
 
+    & > * {
+        flex-shrink: 0;
+    }
+
     @media (min-width: 769px) {
         padding: 0 1.5rem;
     }
 
     .navigation-link {
-        ${tw`flex items-center justify-center h-9 w-9 rounded-lg text-neutral-400 cursor-pointer transition-all duration-200 relative`};
+        ${tw`items-center justify-center rounded-lg text-neutral-400 cursor-pointer relative`};
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        display: inline-flex;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        width: 2.25rem;
+        height: 2.25rem;
+        min-width: 2.25rem;
+        min-height: 2.25rem;
+        max-width: 2.25rem;
+        max-height: 2.25rem;
 
         &::before {
             content: '';
@@ -49,17 +66,32 @@ const NavContent = styled.div`
             border-radius: 0.5rem;
             background: linear-gradient(135deg, rgba(211, 47, 66, 0.15) 0%, rgba(211, 47, 66, 0.08) 100%);
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.3s ease;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+            transition: left 0.4s ease;
         }
 
         &:hover {
-            ${tw`text-neutral-100`};
+            ${tw`text-white`};
             transform: translateY(-1px);
             border-color: rgba(211, 47, 66, 0.3);
-            box-shadow: 0 2px 8px rgba(211, 47, 66, 0.15), 0 0 0 1px rgba(211, 47, 66, 0.1);
+            box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
 
             &::before {
                 opacity: 1;
+            }
+
+            &::after {
+                left: 100%;
             }
         }
 
@@ -71,6 +103,12 @@ const NavContent = styled.div`
             font-size: 1.125rem;
             position: relative;
             z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+        }
+
+        &:hover svg {
+            transform: scale(1.1);
+            color: #d32f42;
         }
     }
 `;
@@ -80,6 +118,11 @@ const ButtonGroup = styled.div`
     position: relative;
     padding-right: 0.75rem;
     margin-right: 0.75rem;
+
+    & > * {
+        flex-shrink: 0;
+        flex-grow: 0;
+    }
 
     &::after {
         content: '';
@@ -117,15 +160,25 @@ const ButtonGroup = styled.div`
 `;
 
 const NavButton = styled.button`
-    ${tw`flex items-center justify-center rounded-lg text-neutral-400 cursor-pointer transition-all duration-200 relative`};
+    ${tw`inline-flex items-center justify-center rounded-lg text-neutral-400 cursor-pointer relative`};
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
     position: relative;
     backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
     height: 2.25rem;
     width: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    max-width: 2.25rem;
+    max-height: 2.25rem;
     flex-shrink: 0;
+    flex-grow: 0;
     text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 
     &::before {
         content: '';
@@ -134,22 +187,39 @@ const NavButton = styled.button`
         border-radius: 0.5rem;
         background: linear-gradient(135deg, rgba(211, 47, 66, 0.15) 0%, rgba(211, 47, 66, 0.08) 100%);
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
     }
 
     @media (min-width: 769px) {
         height: 2.25rem;
         width: 2.25rem;
+        min-width: 2.25rem;
+        min-height: 2.25rem;
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
+        ${tw`text-white`};
         transform: translateY(-1px);
         border-color: rgba(211, 47, 66, 0.3);
-        box-shadow: 0 2px 8px rgba(211, 47, 66, 0.15), 0 0 0 1px rgba(211, 47, 66, 0.1);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
 
         &::before {
             opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
         }
     }
 
@@ -161,25 +231,44 @@ const NavButton = styled.button`
         font-size: 1rem;
         position: relative;
         z-index: 1;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
 
         @media (min-width: 769px) {
             font-size: 1.125rem;
         }
     }
+
+    &:hover svg {
+        transform: scale(1.1);
+        color: #d32f42;
+    }
 `;
 
 const NavLinkStyled = styled(NavLink)`
-    ${tw`flex items-center justify-center no-underline transition-all duration-200 relative`};
+    ${tw`inline-flex items-center justify-center no-underline relative`};
     position: relative;
     background: transparent;
     border: none;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
     height: 2.25rem;
     width: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    max-width: 2.25rem;
+    max-height: 2.25rem;
     flex-shrink: 0;
+    flex-grow: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     @media (min-width: 769px) {
         height: 2.25rem;
         width: 2.25rem;
+        min-width: 2.25rem;
+        min-height: 2.25rem;
+        max-width: 2.25rem;
+        max-height: 2.25rem;
     }
 
     &:hover {
@@ -192,14 +281,20 @@ const NavLinkStyled = styled(NavLink)`
 `;
 
 const MobileMenuButton = styled.button`
-    ${tw`flex items-center justify-center rounded-lg text-neutral-400 cursor-pointer transition-all duration-200`};
+    ${tw`flex items-center justify-center rounded-lg text-neutral-400 cursor-pointer relative`};
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
     position: relative;
     backdrop-filter: blur(10px);
     height: 2.25rem;
     width: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    max-width: 2.25rem;
+    max-height: 2.25rem;
     flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 
     &::before {
         content: '';
@@ -208,7 +303,18 @@ const MobileMenuButton = styled.button`
         border-radius: 0.5rem;
         background: linear-gradient(135deg, rgba(211, 47, 66, 0.15) 0%, rgba(211, 47, 66, 0.08) 100%);
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
     }
 
     @media (min-width: 769px) {
@@ -216,13 +322,17 @@ const MobileMenuButton = styled.button`
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
+        ${tw`text-white`};
         transform: translateY(-1px);
         border-color: rgba(211, 47, 66, 0.3);
-        box-shadow: 0 2px 8px rgba(211, 47, 66, 0.15), 0 0 0 1px rgba(211, 47, 66, 0.1);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
 
         &::before {
             opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
         }
     }
 
@@ -234,6 +344,12 @@ const MobileMenuButton = styled.button`
         font-size: 1.125rem;
         position: relative;
         z-index: 1;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+    }
+
+    &:hover svg {
+        transform: scale(1.1);
+        color: #d32f42;
     }
 `;
 
@@ -248,7 +364,7 @@ const LeftSection = styled.div`
 `;
 
 const CompanyName = styled(Link)`
-    ${tw`font-header no-underline transition-all duration-200`};
+    ${tw`font-header no-underline relative`};
     color: rgba(255, 255, 255, 0.95);
     font-weight: 700;
     letter-spacing: -0.025em;
@@ -260,15 +376,27 @@ const CompanyName = styled(Link)`
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 150px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     &::before {
         content: '';
         position: absolute;
         inset: 0;
         border-radius: 0.5rem;
-        background: rgba(211, 47, 66, 0.08);
+        background: rgba(211, 47, 66, 0.1);
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.12), transparent);
+        transition: left 0.4s ease;
     }
 
     &:hover {
@@ -277,6 +405,10 @@ const CompanyName = styled(Link)`
 
         &::before {
             opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
         }
     }
 
@@ -293,14 +425,24 @@ const CompanyName = styled(Link)`
 `;
 
 const BackButton = styled(Link)`
-    ${tw`flex items-center justify-center rounded-lg text-neutral-400 cursor-pointer transition-all duration-200 relative`};
+    ${tw`inline-flex items-center justify-center rounded-lg text-neutral-400 cursor-pointer relative`};
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
     text-decoration: none;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
     height: 2.25rem;
     width: 2.25rem;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    max-width: 2.25rem;
+    max-height: 2.25rem;
     flex-shrink: 0;
+    flex-grow: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 
     &::before {
         content: '';
@@ -309,17 +451,32 @@ const BackButton = styled(Link)`
         border-radius: 0.5rem;
         background: linear-gradient(135deg, rgba(211, 47, 66, 0.15) 0%, rgba(211, 47, 66, 0.08) 100%);
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
+        ${tw`text-white`};
         transform: translateY(-1px);
         border-color: rgba(211, 47, 66, 0.3);
-        box-shadow: 0 2px 8px rgba(211, 47, 66, 0.15), 0 0 0 1px rgba(211, 47, 66, 0.1);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
 
         &::before {
             opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
         }
     }
 
@@ -331,10 +488,16 @@ const BackButton = styled(Link)`
         font-size: 1rem;
         position: relative;
         z-index: 1;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
 
         @media (min-width: 769px) {
             font-size: 1.125rem;
         }
+    }
+
+    &:hover svg {
+        transform: scale(1.1);
+        color: #d32f42;
     }
 
     &.desktop-only {
@@ -348,9 +511,14 @@ const RightSection = styled.div`
     ${tw`flex items-center`};
     gap: 0.5rem;
     flex-shrink: 0;
+    min-width: 0;
 
     @media (min-width: 769px) {
         gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        gap: 0.375rem;
     }
 `;
 

@@ -20,6 +20,7 @@ import {
     faSearch,
     faSignOutAlt,
     faLayerGroup,
+    faWrench,
 } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -36,10 +37,10 @@ const SidebarContainer = styled.aside<{ $collapsed: boolean; $isMobile: boolean;
     top: 3.5rem;
     height: calc(100vh - 3.5rem);
     width: ${(props) => (props.$collapsed ? '4rem' : '16rem')};
-    background: linear-gradient(180deg, rgba(28, 28, 28, 0.98) 0%, rgba(24, 24, 24, 0.98) 100%);
+    background: linear-gradient(180deg, rgba(33, 33, 33, 0.95) 0%, rgba(24, 24, 24, 0.98) 100%);
     backdrop-filter: blur(20px) saturate(180%);
-    border-right: 1px solid rgba(211, 47, 66, 0.15);
-    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.05);
+    border-right: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.05), inset -1px 0 0 rgba(211, 47, 66, 0.1);
 
     @media (min-width: 769px) {
         top: 4rem;
@@ -52,18 +53,20 @@ const SidebarContainer = styled.aside<{ $collapsed: boolean; $isMobile: boolean;
         transform: ${(props) => (props.$mobileOpen ? 'translateX(0)' : 'translateX(-100%)')};
         width: 16rem;
         z-index: 60;
+        box-shadow: 4px 0 32px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.05);
     }
 `;
 
 const SidebarFooter = styled.div`
     ${tw`absolute bottom-0 left-0 right-0`};
-    border-top: 1px solid rgba(211, 47, 66, 0.12);
-    background: rgba(32, 32, 32, 0.5);
+    border-top: 1px solid rgba(211, 47, 66, 0.2);
+    background: linear-gradient(180deg, transparent 0%, rgba(33, 33, 33, 0.8) 100%);
     backdrop-filter: blur(10px);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
 `;
 
 const ToggleButton = styled.button<{ $collapsed: boolean }>`
-    ${tw`flex items-center justify-center h-12 text-neutral-400 hover:text-neutral-100 transition-all duration-200 relative`};
+    ${tw`flex items-center justify-center h-12 text-neutral-400 hover:text-neutral-100 relative`};
     background: transparent;
     border: none;
     cursor: pointer;
@@ -72,24 +75,45 @@ const ToggleButton = styled.button<{ $collapsed: boolean }>`
     gap: 0.75rem;
     position: relative;
     border-radius: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 
     &::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: rgba(211, 47, 66, 0.1);
+        background: rgba(211, 47, 66, 0.15);
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: opacity 0.3s ease;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.5s ease;
     }
 
     &:hover {
+        ${tw`text-white`};
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
+
         &::before {
             opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
         }
     }
 
     &:active {
-        transform: scale(0.98);
+        transform: translateY(0) scale(0.98);
     }
 
     svg {
@@ -98,7 +122,7 @@ const ToggleButton = styled.button<{ $collapsed: boolean }>`
         font-size: 1rem;
         left: ${(props) => (props.$collapsed ? '50%' : '1rem')};
         transform: ${(props) => (props.$collapsed ? 'translateX(-50%)' : 'none')};
-        transition: left 0.3s ease, transform 0.3s ease;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
 
     span {
@@ -108,7 +132,7 @@ const ToggleButton = styled.button<{ $collapsed: boolean }>`
         display: ${(props) => (props.$collapsed ? 'none' : 'block')};
         font-weight: 500;
         margin-left: ${(props) => (props.$collapsed ? '0' : '2.5rem')};
-        transition: margin-left 0.3s ease, opacity 0.2s ease;
+        transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         opacity: ${(props) => (props.$collapsed ? 0 : 1)};
     }
 `;
@@ -120,7 +144,7 @@ const NavSection = styled.div`
 const MobileActionsDivider = styled.div`
     display: none;
     margin: 1.5rem 1rem 1rem 1rem;
-    border-top: 1px solid rgba(211, 47, 66, 0.25);
+    border-top: 1px solid rgba(211, 47, 66, 0.2);
     position: relative;
 
     &::before {
@@ -128,9 +152,10 @@ const MobileActionsDivider = styled.div`
         position: absolute;
         left: 0;
         top: -1px;
-        width: 3rem;
+        width: 4rem;
         height: 2px;
-        background: linear-gradient(90deg, rgba(211, 47, 66, 0.4) 0%, transparent 100%);
+        background: linear-gradient(90deg, rgba(211, 47, 66, 0.5) 0%, rgba(211, 47, 66, 0.2) 50%, transparent 100%);
+        box-shadow: 0 0 8px rgba(211, 47, 66, 0.3);
     }
 
     @media (max-width: 768px) {
@@ -157,126 +182,190 @@ const NavItem = styled.li`
 `;
 
 const MobileActionButton = styled.button`
-    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline transition-all duration-200 relative w-full text-left`};
+    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline relative w-full text-left`};
     font-weight: 500;
     position: relative;
     min-height: 2.75rem;
     margin: 0.125rem 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
     background: transparent;
     border: none;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
+    }
 
     svg {
-        ${tw`flex-shrink-0`};
+        ${tw`flex-shrink-0 relative z-10`};
         width: 1.25rem;
         font-size: 1.25rem;
-        transition: transform 0.2s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
 
     span {
-        ${tw`flex-1`};
+        ${tw`flex-1 relative z-10`};
         white-space: nowrap;
         overflow: hidden;
         font-size: 0.9375rem;
+        transition: color 0.3s ease;
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
-        background: rgba(211, 47, 66, 0.12);
-        transform: translateX(2px);
+        ${tw`text-white`};
+        background: rgba(211, 47, 66, 0.15);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
+
+        &::before {
+            left: 100%;
+        }
 
         svg {
             transform: scale(1.1);
+            color: #d32f42;
         }
     }
 
     &:active {
-        transform: translateX(0) scale(0.98);
+        transform: translateX(2px) scale(0.98);
     }
 `;
 
 const MobileActionLink = styled(Link)`
-    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline transition-all duration-200 relative`};
+    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline relative`};
     font-weight: 500;
     position: relative;
     min-height: 2.75rem;
     margin: 0.125rem 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
+    }
 
     svg {
-        ${tw`flex-shrink-0`};
+        ${tw`flex-shrink-0 relative z-10`};
         width: 1.25rem;
         font-size: 1.25rem;
-        transition: transform 0.2s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
 
     span {
-        ${tw`flex-1`};
+        ${tw`flex-1 relative z-10`};
         white-space: nowrap;
         overflow: hidden;
         font-size: 0.9375rem;
+        transition: color 0.3s ease;
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
-        background: rgba(211, 47, 66, 0.12);
-        transform: translateX(2px);
+        ${tw`text-white`};
+        background: rgba(211, 47, 66, 0.15);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
+
+        &::before {
+            left: 100%;
+        }
 
         svg {
             transform: scale(1.1);
+            color: #d32f42;
         }
     }
 
     &:active {
-        transform: translateX(0) scale(0.98);
+        transform: translateX(2px) scale(0.98);
     }
 `;
 
 const MobileActionAnchor = styled.a`
-    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline transition-all duration-200 relative`};
+    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline relative`};
     font-weight: 500;
     position: relative;
     min-height: 2.75rem;
     margin: 0.125rem 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
+    }
 
     svg {
-        ${tw`flex-shrink-0`};
+        ${tw`flex-shrink-0 relative z-10`};
         width: 1.25rem;
         font-size: 1.25rem;
-        transition: transform 0.2s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
 
     span {
-        ${tw`flex-1`};
+        ${tw`flex-1 relative z-10`};
         white-space: nowrap;
         overflow: hidden;
         font-size: 0.9375rem;
+        transition: color 0.3s ease;
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
-        background: rgba(211, 47, 66, 0.12);
-        transform: translateX(2px);
+        ${tw`text-white`};
+        background: rgba(211, 47, 66, 0.15);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
+
+        &::before {
+            left: 100%;
+        }
 
         svg {
             transform: scale(1.1);
+            color: #d32f42;
         }
     }
 
     &:active {
-        transform: translateX(0) scale(0.98);
+        transform: translateX(2px) scale(0.98);
     }
 `;
 
 const NavLinkStyled = styled(NavLink)<{ $collapsed: boolean }>`
-    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline transition-all duration-200 relative`};
+    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline relative`};
     font-weight: 500;
     position: relative;
     min-height: 2.75rem;
     margin: 0.125rem 0.5rem;
-    border-radius: 0.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 
     &::before {
         content: '';
@@ -289,61 +378,164 @@ const NavLinkStyled = styled(NavLink)<{ $collapsed: boolean }>`
         background: linear-gradient(180deg, #d32f42 0%, #b82538 100%);
         border-radius: 0 2px 2px 0;
         opacity: 0;
-        transition: height 0.2s ease, opacity 0.2s ease;
+        transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        box-shadow: 0 0 8px rgba(211, 47, 66, 0.5);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
+        z-index: 0;
     }
 
     svg {
-        ${tw`flex-shrink-0`};
+        ${tw`flex-shrink-0 relative z-10`};
         width: 1.25rem;
         font-size: 1.25rem;
-        transition: transform 0.2s ease;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
     }
 
     span {
-        ${tw`flex-1`};
+        ${tw`flex-1 relative z-10`};
         white-space: nowrap;
         overflow: hidden;
         display: ${(props) => (props.$collapsed ? 'none' : 'block')};
         font-size: 0.9375rem;
+        transition: color 0.3s ease;
     }
 
     &:hover {
-        ${tw`text-neutral-100`};
-        background: rgba(211, 47, 66, 0.12);
-        transform: translateX(2px);
+        ${tw`text-white`};
+        background: rgba(211, 47, 66, 0.15);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
+
+        &::before {
+            height: 65%;
+            opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
+        }
 
         svg {
             transform: scale(1.1);
-        }
-
-        &::before {
-            height: 60%;
-            opacity: 1;
+            color: #d32f42;
         }
     }
 
     &.active {
         ${tw`text-white`};
-        background: linear-gradient(90deg, rgba(211, 47, 66, 0.2) 0%, rgba(211, 47, 66, 0.1) 100%);
-        box-shadow: inset 0 1px 2px rgba(211, 47, 66, 0.2);
+        background: linear-gradient(90deg, rgba(211, 47, 66, 0.25) 0%, rgba(211, 47, 66, 0.15) 100%);
+        box-shadow: inset 0 1px 2px rgba(211, 47, 66, 0.3), 0 4px 12px rgba(211, 47, 66, 0.15);
+        transform: translateX(2px);
 
         &::before {
-            height: 70%;
+            height: 75%;
             opacity: 1;
         }
 
         svg {
             color: #d32f42;
+            transform: scale(1.05);
         }
+    }
+`;
+
+const AdminViewLink = styled.a<{ $collapsed: boolean }>`
+    ${tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline relative`};
+    font-weight: 500;
+    position: relative;
+    min-height: 2.75rem;
+    margin: 0.125rem 0.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: linear-gradient(180deg, #d32f42 0%, #b82538 100%);
+        border-radius: 0 2px 2px 0;
+        opacity: 0;
+        transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        box-shadow: 0 0 8px rgba(211, 47, 66, 0.5);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s ease;
+        z-index: 0;
+    }
+
+    svg {
+        ${tw`flex-shrink-0 relative z-10`};
+        width: 1.25rem;
+        font-size: 1.25rem;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+    }
+
+    span {
+        ${tw`flex-1 relative z-10`};
+        white-space: nowrap;
+        overflow: hidden;
+        display: ${(props) => (props.$collapsed ? 'none' : 'block')};
+        font-size: 0.9375rem;
+        transition: color 0.3s ease;
+    }
+
+    &:hover {
+        ${tw`text-white`};
+        background: rgba(211, 47, 66, 0.15);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(211, 47, 66, 0.2);
+
+        &::before {
+            height: 65%;
+            opacity: 1;
+        }
+
+        &::after {
+            left: 100%;
+        }
+
+        svg {
+            transform: scale(1.1);
+            color: #d32f42;
+        }
+    }
+
+    &:active {
+        transform: translateX(2px) scale(0.98);
     }
 `;
 
 const MobileOverlay = styled.div<{ $visible: boolean }>`
     ${tw`fixed inset-0 bg-black transition-opacity duration-300`};
-    opacity: ${(props) => (props.$visible ? 0.5 : 0)};
+    opacity: ${(props) => (props.$visible ? 0.6 : 0)};
     pointer-events: ${(props) => (props.$visible ? 'auto' : 'none')};
     display: none;
     z-index: 50;
+    backdrop-filter: ${(props) => (props.$visible ? 'blur(4px)' : 'none')};
+    transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
 
     @media (max-width: 768px) {
         display: block;
@@ -359,7 +551,7 @@ const iconMap: Record<string, any> = {
     Users: faUsers,
     Backups: faArchive,
     Network: faNetworkWired,
-    Startup: faCog,
+    Startup: faWrench,
     Settings: faCog,
     Activity: faListAlt,
     Account: faUser,
@@ -433,7 +625,13 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     }, [collapsed, isMobile, onCollapsedChange]);
 
     const to = (value: string, url = false) => {
-        if (!serverRoutes) return value;
+        if (!serverRoutes) {
+            // For account routes, prefix with /account
+            if (value === '/') {
+                return '/account';
+            }
+            return `/account${value}`;
+        }
         if (value === '/') {
             return url ? match.url : match.path;
         }
@@ -498,20 +696,16 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                         {currentRoutes.filter((route) => !!route.name).map(renderRoute)}
                         {serverRoutes && rootAdmin && (
                             <NavItem>
-                                <a
+                                <AdminViewLink
                                     href={`/admin/servers/view/${serverId}`}
                                     target={'_blank'}
                                     rel={'noreferrer'}
                                     onClick={handleLinkClick}
-                                    css={tw`flex items-center gap-3 px-4 py-3 text-neutral-300 no-underline transition-all duration-200 relative min-h-[2.75rem] my-0.5 mx-2 rounded-lg font-medium`}
+                                    $collapsed={collapsed && !isMobile}
                                 >
-                                    <FontAwesomeIcon icon={faNetworkWired} css={tw`flex-shrink-0 w-5 text-[1.25rem]`} />
-                                    {(!collapsed || isMobile) && (
-                                        <span css={tw`flex-1 text-[0.9375rem] whitespace-nowrap overflow-hidden`}>
-                                            Admin View
-                                        </span>
-                                    )}
-                                </a>
+                                    <FontAwesomeIcon icon={faNetworkWired} />
+                                    <span>Admin View</span>
+                                </AdminViewLink>
                             </NavItem>
                         )}
                     </NavList>
