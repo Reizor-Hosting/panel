@@ -1,32 +1,58 @@
 import TransferListener from '@/components/server/TransferListener';
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
-import NavigationBar from '@/components/NavigationBar';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { TopNavigation } from '@/components/NavigationBar';
+import SidebarNavigation from '@/components/SidebarNavigation';
 import TransitionRouter from '@/TransitionRouter';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
-import { CSSTransition } from 'react-transition-group';
-import Can from '@/components/elements/Can';
 import Spinner from '@/components/elements/Spinner';
 import { NotFound, ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
-import { useStoreState } from 'easy-peasy';
-import SubNavigation from '@/components/elements/SubNavigation';
 import InstallListener from '@/components/server/InstallListener';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/components/elements/PermissionRoute';
 import routes from '@/routers/routes';
+import tw from 'twin.macro';
+import styled from 'styled-components/macro';
+
+const ContentArea = styled.div<{ $sidebarCollapsed?: boolean }>`
+    ${tw`transition-all duration-300`};
+    margin-top: 3.5rem;
+    margin-left: 0;
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+    min-height: calc(100vh - 3.5rem);
+
+    @media (min-width: 640px) {
+        padding-top: 1.25rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        padding-bottom: 1.25rem;
+    }
+
+    @media (min-width: 769px) {
+        margin-top: 4rem;
+        min-height: calc(100vh - 4rem);
+        margin-left: ${(props) => (props.$sidebarCollapsed ? '4rem' : '16rem')};
+        padding-top: 1.5rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 1.5rem;
+    }
+`;
 
 export default () => {
     const match = useRouteMatch<{ id: string }>();
     const location = useLocation();
 
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const [error, setError] = useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -64,46 +90,28 @@ export default () => {
 
     return (
         <React.Fragment key={'server-router'}>
-            <NavigationBar />
+            <TopNavigation
+                onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+                sidebarCollapsed={sidebarCollapsed}
+                hasSidebar={false}
+            />
+            <SidebarNavigation
+                serverRoutes
+                serverId={serverId?.toString()}
+                mobileOpen={mobileMenuOpen}
+                onMobileToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onCollapsedChange={setSidebarCollapsed}
+            />
             {!uuid || !id ? (
-                error ? (
-                    <ServerError message={error} />
-                ) : (
-                    <Spinner size={'large'} centered />
-                )
+                <ContentArea $sidebarCollapsed={sidebarCollapsed}>
+                    {error ? <ServerError message={error} /> : <Spinner size={'large'} centered />}
+                </ContentArea>
             ) : (
-                <>
-                    <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
-                            <div>
-                                {routes.server
-                                    .filter((route) => !!route.name)
-                                    .map((route) =>
-                                        route.permission ? (
-                                            <Can key={route.path} action={route.permission} matchAny>
-                                                <NavLink to={to(route.path, true)} exact={route.exact}>
-                                                    {route.name}
-                                                </NavLink>
-                                            </Can>
-                                        ) : (
-                                            <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
-                                                {route.name}
-                                            </NavLink>
-                                        )
-                                    )}
-                                {rootAdmin && (
-                                    // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt} />
-                                    </a>
-                                )}
-                            </div>
-                        </SubNavigation>
-                    </CSSTransition>
+                <ContentArea $sidebarCollapsed={sidebarCollapsed}>
                     <InstallListener />
                     <TransferListener />
                     <WebsocketHandler />
-                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
+                    {inConflictState && !location.pathname.endsWith(`/server/${id}`) ? (
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>
@@ -121,7 +129,7 @@ export default () => {
                             </TransitionRouter>
                         </ErrorBoundary>
                     )}
-                </>
+                </ContentArea>
             )}
         </React.Fragment>
     );
