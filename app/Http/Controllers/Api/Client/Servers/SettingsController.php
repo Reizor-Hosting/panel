@@ -8,11 +8,13 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ReinstallServerService;
+use Pterodactyl\Services\Servers\ChangeNestEggService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ChangeNestEggRequest;
 
 class SettingsController extends ClientApiController
 {
@@ -21,7 +23,8 @@ class SettingsController extends ClientApiController
      */
     public function __construct(
         private ServerRepository $repository,
-        private ReinstallServerService $reinstallServerService
+        private ReinstallServerService $reinstallServerService,
+        private ChangeNestEggService $changeNestEggService
     ) {
         parent::__construct();
     }
@@ -91,5 +94,34 @@ class SettingsController extends ClientApiController
         }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Changes the nest and egg for a server, deletes all files, and reinstalls.
+     *
+     * @throws \Throwable
+     */
+    public function changeNestEgg(ChangeNestEggRequest $request, Server $server): JsonResponse
+    {
+        // Store old values before changing
+        $oldNestId = $server->nest_id;
+        $oldEggId = $server->egg_id;
+
+        $this->changeNestEggService->handle(
+            $server,
+            $request->input('nest_id'),
+            $request->input('egg_id')
+        );
+
+        Activity::event('server:settings.change-nest-egg')
+            ->property([
+                'old_nest_id' => $oldNestId,
+                'old_egg_id' => $oldEggId,
+                'new_nest_id' => $request->input('nest_id'),
+                'new_egg_id' => $request->input('egg_id'),
+            ])
+            ->log();
+
+        return new JsonResponse([], Response::HTTP_ACCEPTED);
     }
 }
