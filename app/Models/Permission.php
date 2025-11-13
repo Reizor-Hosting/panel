@@ -171,7 +171,18 @@ class Permission extends Model
             ],
         ],
 
-        'database' => [
+			'splitter' => [ // splitter
+					'description' => 'Permissions that control a user\'s ability to split this server.', // splitter
+					'keys' => [ // splitter
+							'read' => 'Allows a user to view the split servers.', // splitter
+							'create' => 'Allows a user to create a new server split.', // splitter
+							'update' => 'Allows a user to modify an existing server split.', // splitter
+							'delete' => 'Allows a user to delete an existing server split.', // splitter
+					], // splitter
+			], // splitter
+
+	
+	        'database' => [
             'description' => 'Permissions that control a user\'s access to the database management for this server.',
             'keys' => [
                 'create' => 'Allows a user to create a new database for this server.',

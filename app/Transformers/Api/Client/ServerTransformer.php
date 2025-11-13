@@ -40,6 +40,7 @@ class ServerTransformer extends BaseClientTransformer
             'server_owner' => $user->id === $server->owner_id,
             'identifier' => $server->uuidShort,
             'internal_id' => $server->id,
+            'parent_id' => $server->parent_id,
             'uuid' => $server->uuid,
             'name' => $server->name,
             'node' => $server->node->name,
@@ -63,6 +64,7 @@ class ServerTransformer extends BaseClientTransformer
             'egg_features' => $server->egg->inherit_features,
             'feature_limits' => [
                 'databases' => $server->database_limit,
+                'splits' => $server->splitter_limit,
                 'allocations' => $server->allocation_limit,
                 'backups' => $server->backup_limit,
             ],

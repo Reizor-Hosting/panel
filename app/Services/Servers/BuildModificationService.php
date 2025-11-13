@@ -50,6 +50,7 @@ class BuildModificationService
 
             $server->forceFill(array_merge($merge, [
                 'database_limit' => Arr::get($data, 'database_limit', 0) ?? null,
+                'splitter_limit' => Arr::get($data, 'splitter_limit', 0),
                 'allocation_limit' => Arr::get($data, 'allocation_limit', 0) ?? null,
                 'backup_limit' => Arr::get($data, 'backup_limit', 0) ?? 0,
             ]))->saveOrFail();

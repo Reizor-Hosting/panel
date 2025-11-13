@@ -3,6 +3,7 @@
     $router = app('router');
 @endphp
 <div class="row">
+    @include("blueprint.extensions.serversplitter.server") <!-- splitter -->
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">

@@ -28,6 +28,14 @@ class SuspensionService
     public function toggle(Server $server, string $action = self::ACTION_SUSPEND): void
     {
         Assert::oneOf($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND]);
+        $subservers = Server::query()->where('parent_id', $server->id)->get(); // splitter
+        foreach ($subservers as $subserver) { // splitter
+            try { // splitter
+                $this->toggle($subserver, $action); // splitter
+            } catch (\Throwable $exception) { // splitter
+                logger()->error($exception); // splitter
+            } // splitter
+        } // splitter
 
         $isSuspending = $action === self::ACTION_SUSPEND;
         // Nothing needs to happen if we're suspending the server, and it is already

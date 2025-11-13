@@ -21,13 +21,16 @@ import {
     faSignOutAlt,
     faLayerGroup,
     faWrench,
+    faDivide,
+    faArrowsAlt,
+    faServer,
 } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import Can from '@/components/elements/Can';
 import tw from 'twin.macro';
 import styled from 'styled-components/macro';
-import routes from '@/routers/routes';
+import routes, { ServerRouteDefinition } from '@/routers/routes';
 import { useLocation, Link } from 'react-router-dom';
 import http from '@/api/http';
 import SearchModal from '@/components/dashboard/search/SearchModal';
@@ -555,6 +558,7 @@ const iconMap: Record<string, any> = {
     Settings: faCog,
     Activity: faListAlt,
     Account: faUser,
+    Splitter: faServer,
     'API Credentials': faKey,
     'SSH Keys': faFingerprint,
 };
@@ -659,13 +663,16 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
             </NavLinkStyled>
         );
 
-        if (serverRoutes && 'permission' in route && route.permission !== null) {
-            const permission = route.permission as string | string[];
-            return (
-                <Can key={route.path || index} action={permission} matchAny>
-                    <NavItem>{link}</NavItem>
-                </Can>
-            );
+        if (serverRoutes) {
+            const serverRoute = route as ServerRouteDefinition;
+            if (serverRoute.permission !== null && serverRoute.permission !== undefined) {
+                const permission = serverRoute.permission;
+                return (
+                    <Can key={route.path || index} action={permission} matchAny>
+                        <NavItem>{link}</NavItem>
+                    </Can>
+                );
+            }
         }
 
         return <NavItem key={route.path || index}>{link}</NavItem>;

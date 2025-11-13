@@ -42,6 +42,47 @@ class ServerDeletionService
      */
     public function handle(Server $server): void
     {
+        if ($server->parent_id) { // splitter
+            \Illuminate\Support\Facades\DB::beginTransaction(); // splitter
+            $parent = Server::whereId($server->parent_id)->firstOrFail(); // splitter
+            if ($server->cpu > 0 && $parent->cpu > 0) { // splitter
+                $parent->increment('cpu', $server->cpu); // splitter
+            } // splitter
+            $parent->increment('memory', $server->memory); // splitter
+            if ($server->disk > 0 && $parent->disk > 0) { // splitter
+                $parent->increment('disk', $server->disk); // splitter
+            } // splitter
+            $transformed = (new \Pterodactyl\Transformers\Api\Application\ServerTransformer())->transform($server); // splitter
+            foreach ($transformed['feature_limits'] as $key => $value) { // splitter
+                if ($key === 'splits') { // splitter
+                    continue; // splitter
+                } // splitter
+                try { // splitter
+                    $modKey = $key; // splitter
+                    if (str_ends_with($key, 'ies')) { // splitter
+                        $modKey = substr($key, 0, -3) . 'y'; // splitter
+                    } else if (str_ends_with($key, 's')) { // splitter
+                        $modKey = substr($key, 0, -1); // splitter
+                    } // splitter
+                    $parent->increment("{$modKey}_limit", $value); // splitter
+                } catch (\Exception $exception) { // splitter
+                    // ignore // splitter
+                } // splitter
+            } // splitter
+            try { // splitter
+                $this->daemonServerRepository->setServer($parent)->sync(); // splitter
+            } catch (\Exception $exception) { // splitter
+                if (!$this->force) { // splitter
+                    throw $exception; // splitter
+                } // splitter
+            } // splitter
+            \Illuminate\Support\Facades\DB::commit(); // splitter
+        } else { // splitter
+            $subservers = Server::query()->where('parent_id', $server->id)->get(); // splitter
+            foreach ($subservers as $subserver) { // splitter
+                $this->handle($subserver); // splitter
+            } // splitter
+        } // splitter
         try {
             $this->daemonServerRepository->setServer($server)->delete();
         } catch (DaemonConnectionException $exception) {

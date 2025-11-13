@@ -105,6 +105,13 @@
                                     </div>
                                     <p class="text-muted small">The total number of databases a user is allowed to create for this server.</p>
                                 </div>
+								<div class="form-group col-xs-6"> <!-- splitter -->
+									<label for="pSplitterLimit" class="control-label">Splitter Limit</label> <!-- splitter -->
+									<div> <!-- splitter -->
+										<input type="text" id="pSplitterLimit" name="splitter_limit" class="form-control" {{ $server->parent_id ? 'disabled' : '' }} value="{{ old('splitter_limit', $server->splitter_limit) }}"/> <!-- splitter -->
+									</div> <!-- splitter -->
+									<p class="text-muted small">The total number of server splits a user is allowed to create for this server.</p> <!-- splitter -->
+								</div> <!-- splitter -->
                                 <div class="form-group col-xs-6">
                                     <label for="allocation_limit" class="control-label">Allocation Limit</label>
                                     <div>

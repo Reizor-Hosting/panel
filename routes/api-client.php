@@ -151,3 +151,5 @@ Route::group([
         Route::put('/docker-image', [Client\Servers\SettingsController::class, 'dockerImage']);
     });
 });
+
+Route::prefix('/extensions/serversplitter')->group(base_path('routes/client-serversplitter.php'));

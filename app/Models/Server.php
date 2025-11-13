@@ -7,6 +7,7 @@ use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -213,6 +214,53 @@ class Server extends Model
     {
         return $this->status === self::STATUS_SUSPENDED;
     }
+
+    public function splits() // splitter
+    { // splitter
+        if ($this->parent_id) { // splitter
+            return Server::where('parent_id', $this->parent_id) // splitter
+                ->orWhere('id', $this->parent_id) // splitter
+                ->get(); // splitter
+        } // splitter
+        return $this->hasMany(Server::class, 'parent_id', 'id')->get(); // splitter
+    } // splitter
+
+    public function totalResources() // splitter
+    { // splitter
+        $servers = $this->splits(); // splitter
+        $resources = [ // splitter
+            'cpu' => $this->cpu === 0 ? -1 : $this->cpu, // splitter
+            'memory' => $this->memory, // splitter
+            'disk' => $this->disk === 0 ? -1 : $this->disk, // splitter
+            'feature_limits' => (new ServerTransformer())->transform($this)['feature_limits'] // splitter
+        ]; // splitter
+        foreach ($servers as $server) { // splitter
+            if ($server->cpu === 0) { // splitter
+                $resources['cpu'] = -1; // splitter
+            } // splitter
+            if ($server->disk === 0) { // splitter
+                $resources['disk'] = -1; // splitter
+            } // splitter
+            if ($server->id === $this->id) { // splitter
+                continue; // splitter
+            } // splitter
+            if ($resources['cpu'] !== -1) { // splitter
+                $resources['cpu'] += $server->cpu; // splitter
+            } // splitter
+            if ($resources['disk'] !== -1) { // splitter
+                $resources['disk'] += $server->disk; // splitter
+            } // splitter
+            $resources['memory'] += $server->memory; // splitter
+            $transformed = (new ServerTransformer())->transform($server); // splitter
+            foreach ($transformed['feature_limits'] as $feature => $limit) { // splitter
+                if (!isset($resources['feature_limits'][$feature])) { // splitter
+                    $resources['feature_limits'][$feature] = 0; // splitter
+                } // splitter
+                $resources['feature_limits'][$feature] += $limit; // splitter
+            } // splitter
+        } // splitter
+        return $resources; // splitter
+    } // splitter
 
     /**
      * Gets the user who owns the server.
