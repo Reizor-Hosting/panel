@@ -6,10 +6,18 @@ import Input from '@/components/elements/Input';
 
 export const FileActionCheckbox = styled(Input)`
     && {
-        ${tw`border-neutral-500 bg-transparent`};
+        background-color: transparent;
+        border-color: rgba(211, 47, 66, 0.3);
 
         &:not(:checked) {
-            ${tw`hover:border-neutral-300`};
+            &:hover {
+                border-color: rgba(211, 47, 66, 0.5);
+            }
+        }
+
+        &:checked {
+            background-color: rgba(211, 47, 66, 0.2);
+            border-color: rgba(211, 47, 66, 0.6);
         }
     }
 `;

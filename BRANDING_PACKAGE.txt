@@ -1,0 +1,705 @@
+================================================================================
+                    REIZOR HOSTING - BRANDING PACKAGE
+                    Comprehensive Theme & Design System
+================================================================================
+
+DOCUMENT PURPOSE:
+This document provides a complete specification of all design, branding, and 
+theming elements used on the Reizor Hosting website. It is designed to be 
+easily readable by LLMs and human developers for maintaining consistent 
+branding across all Reizor Hosting properties.
+
+Last Updated: November 13, 2025
+Framework: Next.js 15.5.3 with Mantine UI 8.3.6
+
+================================================================================
+                              BRAND IDENTITY
+================================================================================
+
+COMPANY NAME: Reizor Hosting
+
+TAGLINE: High-Performance Minecraft & VPS Hosting
+
+BRAND POSITIONING:
+- Specializes in high-performance Minecraft hosting
+- Focus on GregTech: New Horizons (GTNH) and modded Minecraft
+- Premium VPS hosting services
+- Powered by AMD Ryzen 9 processors
+- Dedicated resources and performance-focused
+
+TARGET KEYWORDS:
+Minecraft hosting, GregTech New Horizons hosting, GTNH hosting, modded 
+Minecraft hosting, Minecraft server hosting, Ryzen 9 Minecraft hosting, 
+VPS hosting, dedicated Minecraft server, Minecraft modpack hosting, 
+affordable Minecraft hosting, high performance Minecraft hosting
+
+================================================================================
+                            COLOR PALETTE
+================================================================================
+
+PRIMARY COLORS:
+
+RED PALETTE (Brand Color):
+  - red.0: #f7c9cd (Lightest - subtle backgrounds, hover states)
+  - red.1: #ef9aa2 (Light - secondary accents)
+  - red.2: #e76c77 (Medium Light - highlights)
+  - red.3: #de3e4c (Medium - primary text/icons)
+  - red.4: #b92a3c (Medium Dark)
+  - red.5: #d32f42 (PRIMARY BRAND RED - main accent color)
+  - red.6: #9f2536 (Dark)
+  - red.7: #851f30 (Darker)
+  - red.8: #6b1a2a (Very Dark)
+  - red.9: #511523 (Darkest)
+
+  ** Key Usage: rgba(211, 47, 66, X) where X is opacity **
+  - The primary brand red (red.5: #d32f42 / rgb(211, 47, 66)) is used throughout
+  - Common opacity values: 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.9
+
+GRAY PALETTE (Background & Structure):
+  - gray.0: #f5f5f5 (Lightest)
+  - gray.1: #e0e0e0
+  - gray.2: #bdbdbd
+  - gray.3: #9e9e9e
+  - gray.4: #757575
+  - gray.5: #616161
+  - gray.6: #9e9e9e (Cards, elevated surfaces)
+  - gray.7: #424242
+  - gray.8: #303030 (Secondary backgrounds)
+  - gray.9: #212121 (PRIMARY BACKGROUND - main dark background)
+
+  ** Key Usage: **
+  - gray.9 (#212121 / rgb(33, 33, 33)): Primary page background
+  - rgba(33, 33, 33, 0.95): Semi-transparent navbar background
+
+WHITE/TEXT COLORS:
+  - Pure White: rgba(255, 255, 255, 1.0) - Full opacity text
+  - High Emphasis: rgba(255, 255, 255, 0.95) - Primary titles
+  - Medium Emphasis: rgba(255, 255, 255, 0.9) - Standard text
+  - Low Emphasis: rgba(255, 255, 255, 0.85) - Secondary text, descriptions
+
+================================================================================
+                            TYPOGRAPHY
+================================================================================
+
+PRIMARY FONT FAMILY: Oswald
+  - Font Weight Range: 200-700
+  - Import: Google Fonts
+  - URL: 'https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap'
+  - Fallback: System UI fonts
+
+FONT WEIGHTS:
+  - 200: Extra Light (rarely used)
+  - 300: Light
+  - 400: Regular (body text)
+  - 500: Medium
+  - 600: Semi-Bold (headings, emphasis)
+  - 700: Bold (strong emphasis)
+
+HEADING SIZES:
+  - H1 (Hero Titles): 48px desktop / 34px mobile
+  - Standard Titles: Variable based on context
+  - Line Height: 1.05 for large headings, 1.15 for mobile, 1.6 for body text
+
+TEXT STYLING PATTERNS:
+  - Primary Headings: font-weight 600, rgba(255, 255, 255, 0.95)
+  - Body Text: font-weight 400, rgba(255, 255, 255, 0.85)
+  - Accent Headings: color red.3 (#de3e4c)
+
+================================================================================
+                          LAYOUT & SPACING
+================================================================================
+
+COLOR SCHEME: Dark Mode (Default and Primary)
+  - Site is designed for dark mode by default
+  - ColorScheme Setting: "dark"
+
+CONTAINER SYSTEM:
+  - Uses Mantine Container component for content width
+  - Responsive breakpoints follow Mantine standards
+
+SPACING UNITS (Mantine Variables):
+  - xs: Extra Small spacing
+  - sm: Small spacing
+  - md: Medium spacing
+  - lg: Large spacing
+  - xl: Extra Large spacing
+  - Multipliers used: calc(var(--mantine-spacing-xl) * 2) for hero sections
+
+PADDING PATTERNS:
+  - Page Sections: calc(var(--mantine-spacing-xl) * 2) top/bottom (desktop)
+  - Page Sections: calc(var(--mantine-spacing-xl) * 1.5) or lg (mobile)
+  - Cards: var(--mantine-spacing-md) on mobile
+  - Forms: calc(var(--mantine-spacing-xl) * 1.5)
+
+RESPONSIVE BREAKPOINTS:
+  - Mobile: max-width: $mantine-breakpoint-sm
+  - Tablet: max-width: $mantine-breakpoint-md
+  - Desktop: Default, no media query
+
+================================================================================
+                        COMPONENT STYLING
+================================================================================
+
+NAVIGATION BAR:
+  Background: rgba(33, 33, 33, 0.95) - Semi-transparent dark
+  Border: 1px solid rgba(211, 47, 66, 0.2) (bottom)
+  Position: Sticky, top: 0, z-index: 100
+  Backdrop Filter: blur(10px)
+  Height: 60px
+  
+  Navigation Buttons:
+    - Transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+    - Hover Effect: transform: translateY(-1px)
+  
+  Mobile Drawer:
+    - Backdrop Filter: blur(20px)
+    - Close Button: rgba(211, 47, 66, 0.2) background
+    - Border: 1px solid rgba(211, 47, 66, 0.3)
+    - Hover: rgba(211, 47, 66, 0.4) background
+
+  Menu Items (Desktop Dropdown):
+    - Hover Background: rgba(211, 47, 66, 0.15)
+    - Hover Transform: translateX(4px)
+    - Animation: Shimmer effect with gradient sweep
+  
+  Mobile Menu Items:
+    - Border: 1px solid rgba(211, 47, 66, 0.1)
+    - Border Radius: 12px
+    - Hover Border: rgba(211, 47, 66, 0.3)
+    - Hover Transform: translateX(4px)
+    - Box Shadow on Hover: 0 4px 12px rgba(211, 47, 66, 0.2)
+
+FOOTER:
+  Background: var(--mantine-color-gray-9)
+  Border: 1px solid rgba(211, 47, 66, 0.2) (top)
+  Padding: calc(var(--mantine-spacing-xl) * 2) top
+  Padding: calc(var(--mantine-spacing-xl) * 1.5) bottom
+  
+  Links:
+    - Color: rgba(222, 62, 76, 0.9) (red.3 with opacity)
+    - Hover Color: rgba(239, 154, 162, 1) (red.1)
+    - Hover Transform: translateX(4px)
+    - Transition: all 0.3s ease
+  
+  After Footer Section:
+    - Border Top: 1px solid rgba(211, 47, 66, 0.1)
+    - Margin Top: var(--mantine-spacing-xl)
+    - Padding Top: var(--mantine-spacing-md)
+
+HERO SECTION:
+  Background: 
+    - Base: var(--mantine-color-gray-9)
+    - Gradient Overlay: linear-gradient(250deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.7) 70%)
+    - Background Image: url("/hero.png")
+    - Background Size: cover
+    - Background Position: center
+  Border: 1px solid rgba(211, 47, 66, 0.2) (bottom)
+  
+  Hero Title:
+    - Color: rgba(255, 255, 255, 0.95)
+    - Font Weight: 600
+    - Font Size: 48px desktop / 34px mobile
+    - Line Height: 1.05 desktop / 1.15 mobile
+    - Max Width: 500px
+  
+  Hero Description:
+    - Color: rgba(255, 255, 255, 0.85)
+    - Line Height: 1.6
+    - Max Width: 500px
+
+CARDS (General):
+  Background: backdrop-filter: blur(10px)
+  Color: white
+  Transition: all 0.3s ease
+  Border Radius: Default Mantine radius
+  
+  Hover State (Non-disabled):
+    - Transform: translateY(-4px)
+    - Box Shadow: 0 12px 24px rgba(211, 47, 66, 0.3)
+    - Border Color: rgba(211, 47, 66, 0.6)
+
+PLAN CARDS (Hosting Plans):
+  Background: backdrop-filter: blur(10px)
+  Color: white
+  Transition: all 0.3s ease
+  Cursor: pointer
+  
+  Hover State:
+    - Transform: translateY(-4px)
+    - Box Shadow: 0 12px 24px rgba(211, 47, 66, 0.3)
+    - Border Color: rgba(211, 47, 66, 0.6)
+  
+  Sold Out State:
+    - Cursor: not-allowed
+    - Opacity: 0.6
+    - Filter: grayscale(0.3)
+    - No hover effects
+  
+  Mobile Styling:
+    - Max Width: 100%
+    - Padding: var(--mantine-spacing-md)
+
+FEATURE CARDS:
+  Background: backdrop-filter: blur(10px)
+  Border: 1px solid
+  Color: white
+  Transition: all 0.3s ease
+  
+  Hover State:
+    - Background: rgba(211, 47, 66, 0.25)
+    - Border Color: rgba(211, 47, 66, 0.5)
+    - Transform: translateY(-2px)
+    - Box Shadow: 0 8px 16px rgba(211, 47, 66, 0.2)
+
+FILTER BUTTONS:
+  Transition: all 0.2s ease
+  Position: relative
+  Overflow: hidden
+  
+  Ripple Effect:
+    - Pseudo-element ::before with circular expansion
+    - Background: rgba(255, 255, 255, 0.1)
+    - Transition: width 0.6s, height 0.6s
+    - Expands to 300px circle on hover
+  
+  Hover State:
+    - Transform: translateY(-2px)
+    - Box Shadow: 0 8px 16px rgba(211, 47, 66, 0.3)
+  
+  Mobile:
+    - Min Height: 50px
+    - Font Size: 0.875rem
+    - Min Width: 100%
+
+FORMS:
+  Background: rgba(211, 47, 66, 0.1)
+  Border: 1px solid rgba(211, 47, 66, 0.3)
+  Border Radius: var(--mantine-radius-lg)
+  Padding: calc(var(--mantine-spacing-xl) * 1.5)
+  Backdrop Filter: blur(10px)
+
+BUTTONS (Call-to-Action):
+  Padding: 40px left/right (desktop)
+  Font Weight: 600
+  Primary Color: Red accent (brand red)
+  Width: 100% on mobile
+
+DARK SECTIONS:
+  Background: var(--mantine-color-gray-9)
+  Margin Bottom: 0
+  Padding Bottom: 0
+  
+  Title Color: var(--mantine-color-red-3) (#de3e4c)
+
+DARK CARDS:
+  Background: var(--mantine-color-gray-6)
+  Color: white
+
+BANNER SECTIONS:
+  Background: var(--mantine-color-gray-9)
+  Background Image: linear-gradient(135deg, rgba(211, 47, 66, 0.3), rgba(211, 47, 66, 0.1))
+  Border Top: 1px solid rgba(211, 47, 66, 0.2)
+  Border Bottom: 1px solid rgba(211, 47, 66, 0.2)
+  Margin: 0
+
+FEATURES SECTIONS:
+  Background: var(--mantine-color-gray-8) (#303030)
+  Margin: 0
+
+================================================================================
+                        ANIMATIONS & TRANSITIONS
+================================================================================
+
+STANDARD TRANSITION:
+  - Duration: 0.3s
+  - Timing Function: ease
+  - Properties: all
+
+CUBIC BEZIER TRANSITIONS:
+  - Duration: 0.3s
+  - Timing Function: cubic-bezier(0.4, 0, 0.2, 1)
+  - Usage: Navigation buttons, interactive elements
+
+HOVER TRANSFORMS:
+  - Cards: translateY(-4px) or translateY(-2px)
+  - Links: translateX(4px)
+  - Buttons: translateY(-1px) or translateY(-2px)
+
+FADE IN UP ANIMATION:
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  Duration: 0.4s
+  Timing: ease-out
+
+FADE IN SCALE ANIMATION:
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  Duration: 0.4s
+  Timing: ease-out
+
+STAGGERED ANIMATIONS:
+  - Plan cards animate in sequence
+  - Delay increments: 0.1s per item
+  - Items 1-8: delays from 0.1s to 0.8s
+  - Animation: fadeInUp
+  - Fill Mode: both
+
+SHIMMER/SWEEP EFFECTS:
+  - Gradient sweep from left to right
+  - Background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.1-0.15), transparent)
+  - Transition: left 0.4s-0.5s ease
+  - Initial Position: left: -100%
+  - Hover Position: left: 100%
+
+DROPDOWN ANIMATION:
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  Duration: 0.2s
+  Timing: cubic-bezier(0.4, 0, 0.2, 1)
+
+BOX SHADOWS (Hover Effects):
+  - Level 1: 0 4px 12px rgba(211, 47, 66, 0.2)
+  - Level 2: 0 8px 16px rgba(211, 47, 66, 0.2)
+  - Level 3: 0 8px 16px rgba(211, 47, 66, 0.3)
+  - Level 4: 0 12px 24px rgba(211, 47, 66, 0.3)
+  - Level 5: 0 8px 20px rgba(211, 47, 66, 0.3)
+
+BACKDROP FILTERS:
+  - Standard: blur(10px)
+  - Heavy: blur(20px)
+  - Usage: Cards, navbar, drawers for glassmorphism effect
+
+================================================================================
+                      VISUAL EFFECTS & PATTERNS
+================================================================================
+
+GLASSMORPHISM:
+  - Backdrop Filter: blur(10px) or blur(20px)
+  - Semi-transparent backgrounds
+  - Layered with rgba colors for depth
+
+BORDERS:
+  - Primary Accent Border: 1px solid rgba(211, 47, 66, 0.2)
+  - Subtle Border: 1px solid rgba(211, 47, 66, 0.1)
+  - Medium Border: 1px solid rgba(211, 47, 66, 0.3)
+  - Strong Border: 1px solid rgba(211, 47, 66, 0.5)
+  - Hover Border: rgba(211, 47, 66, 0.6)
+
+GRADIENT OVERLAYS:
+  - Hero Section: linear-gradient(250deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.7) 70%)
+  - Banner Section: linear-gradient(135deg, rgba(211, 47, 66, 0.3), rgba(211, 47, 66, 0.1))
+
+DISABLED/SOLD OUT STATES:
+  - Cursor: not-allowed
+  - Opacity: 0.6
+  - Filter: grayscale(0.3)
+  - No transform on hover
+
+OVERFLOW HANDLING:
+  - Page Level: overflow-x: hidden
+  - Drawer Body: overflow-y: auto, -webkit-overflow-scrolling: touch
+
+Z-INDEX LAYERS:
+  - Navbar: 100
+  - Modal/Drawer overlays: Default Mantine handling
+
+================================================================================
+                          BRAND ASSETS
+================================================================================
+
+LOGO FILES:
+  - /public/logo-transparent.png - Full logo with transparency
+  - /public/logo-cropped.png - Cropped version
+  - /public/favicon.svg - Site favicon (SVG format)
+
+HERO IMAGE:
+  - /public/hero.png - Main hero background image
+
+FLAG ICONS (Server Locations):
+  - /public/flags/us.png - United States
+  - /public/flags/gb.png - United Kingdom
+  - /public/flags/de.png - Germany
+  - /public/flags/pl.png - Poland
+
+LOGO USAGE:
+  - Clickable, links to homepage
+  - Transition: opacity 0.3s ease
+  - Hover: opacity: 0.8
+  - Display: flex, align-items: center
+
+================================================================================
+                      BRAND VOICE & MESSAGING
+================================================================================
+
+PRIMARY MESSAGE:
+"High-Performance Minecraft & VPS Hosting"
+
+KEY VALUE PROPOSITIONS:
+  1. Powered by AMD Ryzen 9 processors
+  2. Specialized in GregTech: New Horizons (GTNH) hosting
+  3. Optimized for modded Minecraft servers
+  4. Dedicated resources and performance
+  5. Multiple server locations (US, Europe)
+
+TONE:
+  - Professional yet approachable
+  - Performance-focused
+  - Technical expertise
+  - Gaming-friendly
+
+TARGET AUDIENCE:
+  - Minecraft server administrators
+  - Modpack players and communities
+  - GTNH enthusiasts
+  - Technical users seeking VPS services
+
+================================================================================
+                      SEO & METADATA
+================================================================================
+
+SITE NAME: Reizor Hosting
+DOMAIN: https://reizorhosting.com
+
+META TITLE TEMPLATE: "%s | Reizor Hosting"
+DEFAULT TITLE: "Reizor Hosting - High-Performance Minecraft & VPS Hosting"
+
+META DESCRIPTION:
+"High-performance Minecraft hosting and VPS servers powered by Ryzen 9 processors. 
+Specializing in GregTech: New Horizons, modded Minecraft hosting, and dedicated 
+resources. Perfect for GTNH servers, modded servers, and vanilla Minecraft hosting."
+
+OPEN GRAPH:
+  Type: website
+  Locale: en_US
+  URL: https://reizorhosting.com
+  Site Name: Reizor Hosting
+
+TWITTER CARD: summary_large_image
+
+ROBOTS:
+  Index: true
+  Follow: true
+  Max-video-preview: -1
+  Max-image-preview: large
+  Max-snippet: -1
+
+================================================================================
+                    TECHNICAL IMPLEMENTATION
+================================================================================
+
+FRAMEWORK: Next.js 15.5.3
+UI LIBRARY: Mantine Core 8.3.6
+ICONS: Tabler Icons React 3.35.0
+STYLING: CSS Modules + Mantine Styles
+STATE MANAGEMENT: React 19.1.1 hooks + SWR 2.3.6
+BUILD SYSTEM: Next.js with PostCSS
+
+CSS PREPROCESSING:
+  - PostCSS
+  - postcss-preset-mantine 1.18.0
+  - postcss-simple-vars 7.0.1
+
+MANTINE THEME CONFIGURATION:
+  Location: /theme.ts
+  Colors: Custom red and gray palettes
+  Font Family: "Oswald"
+  Default Color Scheme: dark
+
+CSS MODULE NAMING:
+  - Pattern: [ComponentName].module.css
+  - Location: Colocated with components
+  - Variable Naming: camelCase
+
+RESPONSIVE APPROACH:
+  - Mobile-first considerations
+  - Mantine breakpoint system
+  - CSS media queries using $mantine-breakpoint-* variables
+
+================================================================================
+                      DESIGN PRINCIPLES
+================================================================================
+
+1. DARK MODE FIRST
+   - Site is designed primarily for dark mode
+   - High contrast for readability
+   - Accent colors pop against dark backgrounds
+
+2. PERFORMANCE-FOCUSED AESTHETICS
+   - Design communicates speed and reliability
+   - Clean, modern interface
+   - Technical yet approachable
+
+3. CONSISTENT BRAND RED
+   - Red accent color (rgb(211, 47, 66)) used throughout
+   - Multiple opacity levels for depth
+   - Always paired with dark backgrounds
+
+4. SMOOTH INTERACTIONS
+   - All interactive elements have transitions
+   - Hover states provide clear feedback
+   - Animations are subtle and purposeful
+
+5. GLASSMORPHISM & DEPTH
+   - Backdrop filters create layered effect
+   - Semi-transparent overlays
+   - Blur effects for modern aesthetic
+
+6. RESPONSIVE & ACCESSIBLE
+   - Mobile-optimized layouts
+   - Touch-friendly interactive areas
+   - Semantic HTML structure
+
+7. GAMING & TECH AESTHETIC
+   - Modern, sharp design
+   - Performance-oriented visuals
+   - Clean typography with Oswald font
+
+================================================================================
+                      USAGE GUIDELINES
+================================================================================
+
+WHEN APPLYING THIS BRANDING TO NEW SITES:
+
+1. COLOR USAGE:
+   - Always use rgb(211, 47, 66) as the primary accent color
+   - Use gray.9 (#212121) for main backgrounds
+   - Maintain white text with appropriate opacity (0.85-0.95)
+   - Use red.3 (#de3e4c) for accent headings
+
+2. TYPOGRAPHY:
+   - Import Oswald from Google Fonts
+   - Use font-weight 600 for headings
+   - Maintain line-height ratios (1.05 for large, 1.6 for body)
+
+3. COMPONENTS:
+   - Apply backdrop-filter: blur(10px) to cards
+   - Use rgba(211, 47, 66, X) for borders and accents
+   - Implement consistent hover states (translateY and box-shadow)
+   - Include transitions: all 0.3s ease on interactive elements
+
+4. SPACING:
+   - Use Mantine spacing variables
+   - Double XL spacing for major sections
+   - Consistent padding in cards and containers
+
+5. ANIMATIONS:
+   - Implement fadeInUp for content entrance
+   - Use staggered delays for lists (0.1s increments)
+   - Add shimmer effects to buttons and menu items
+   - Keep transitions smooth with cubic-bezier easing
+
+6. RESPONSIVE:
+   - Test at sm, md breakpoints
+   - Increase padding/reduce font sizes on mobile
+   - Stack layouts vertically on small screens
+   - Ensure touch-friendly interactive areas (min 44px)
+
+7. CONSISTENCY:
+   - Maintain border styling (1px solid rgba(211, 47, 66, 0.2))
+   - Use consistent box-shadow patterns on hover
+   - Apply glassmorphism to elevated surfaces
+   - Keep z-index hierarchy clean
+
+================================================================================
+                          CHECKLIST FOR NEW SITES
+================================================================================
+
+□ Import Oswald font from Google Fonts
+□ Set up Mantine with dark color scheme
+□ Configure custom red and gray color palettes
+□ Apply gray.9 background to pages
+□ Use rgba(211, 47, 66, X) for all red accents
+□ Implement backdrop-filter blur on cards
+□ Add consistent hover states to interactive elements
+□ Include border styling: 1px solid rgba(211, 47, 66, 0.2)
+□ Apply transitions: all 0.3s ease
+□ Set up responsive breakpoints (sm, md)
+□ Configure sticky navbar with blur effect
+□ Style footer with red accent links
+□ Implement fadeInUp and fadeInScale animations
+□ Add shimmer effects to buttons and menus
+□ Test mobile responsiveness
+□ Ensure overflow-x: hidden on pages
+□ Apply consistent box-shadow patterns
+□ Use white text with 0.85-0.95 opacity
+□ Implement sold-out/disabled states for unavailable items
+□ Add staggered animations for lists
+□ Configure meta tags and SEO
+
+================================================================================
+                          QUICK REFERENCE
+================================================================================
+
+PRIMARY BRAND COLOR: rgb(211, 47, 66) / #d32f42
+BACKGROUND COLOR: rgb(33, 33, 33) / #212121
+FONT: Oswald (Google Fonts, weights 200-700)
+SCHEME: Dark Mode (default)
+
+COMMON RGBA VALUES:
+  - rgba(211, 47, 66, 0.1) - Subtle backgrounds
+  - rgba(211, 47, 66, 0.2) - Borders, dividers
+  - rgba(211, 47, 66, 0.3) - Hover borders, accents
+  - rgba(211, 47, 66, 0.6) - Strong borders
+  - rgba(255, 255, 255, 0.85) - Body text
+  - rgba(255, 255, 255, 0.95) - Headings
+  - rgba(33, 33, 33, 0.95) - Navbar
+
+COMMON TRANSFORMS:
+  - translateY(-4px) - Card hover
+  - translateY(-2px) - Feature card hover
+  - translateX(4px) - Link hover
+
+COMMON BOX-SHADOWS:
+  - 0 12px 24px rgba(211, 47, 66, 0.3) - Card hover
+  - 0 8px 16px rgba(211, 47, 66, 0.2) - Feature hover
+
+COMMON TRANSITIONS:
+  - all 0.3s ease
+  - all 0.3s cubic-bezier(0.4, 0, 0.2, 1)
+  - all 0.2s ease
+
+BACKDROP FILTERS:
+  - blur(10px) - Standard cards
+  - blur(20px) - Drawers, heavy overlays
+
+================================================================================
+                              END OF DOCUMENT
+================================================================================
+
+This branding package should be referenced when:
+  1. Creating new pages on the Reizor Hosting website
+  2. Developing sister sites or related properties
+  3. Designing marketing materials
+  4. Implementing new features or components
+  5. Training LLMs or developers on the brand guidelines
+
+For questions or clarifications about this branding package, refer to the
+source files in the /home/reign/reizor-hosting/Web-Store directory.
+
+Document Prepared For: LLM and Human Developer Reference
+Maintained By: Reizor Hosting Development Team
+

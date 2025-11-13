@@ -16,7 +16,7 @@
             <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
             <link rel="shortcut icon" href="/favicons/favicon.ico">
             <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-            <meta name="theme-color" content="#0e4688">
+            <meta name="theme-color" content="#d32f42">
         @show
 
         @section('user-data')
@@ -32,6 +32,7 @@
             @endif
         @show
         <style>
+            @import url('//fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
             @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
             @import url('//fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&display=swap');
         </style>

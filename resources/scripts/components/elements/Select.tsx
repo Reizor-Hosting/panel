@@ -28,12 +28,18 @@ const Select = styled.select<Props>`
     ${(props) =>
         !props.hideDropdownArrow &&
         css`
-            ${tw`bg-neutral-600 border-neutral-500 text-neutral-200`};
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23C3D1DF' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
+            background-color: #303030;
+            border-color: rgba(211, 47, 66, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23de3e4c' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
 
             &:hover:not(:disabled),
             &:focus {
-                ${tw`border-neutral-400`};
+                border-color: rgba(211, 47, 66, 0.5);
+            }
+
+            &:focus {
+                box-shadow: 0 0 0 2px rgba(211, 47, 66, 0.2);
             }
         `};
 `;

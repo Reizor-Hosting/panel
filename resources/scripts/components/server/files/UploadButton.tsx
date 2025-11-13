@@ -120,8 +120,13 @@ export default ({ className }: WithClassname) => {
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <div
                                 className={
-                                    'flex items-center space-x-4 bg-black w-full ring-4 ring-blue-200 ring-opacity-60 rounded p-6 mx-10 max-w-sm'
+                                    'flex items-center space-x-4 w-full rounded p-6 mx-10 max-w-sm'
                                 }
+                                style={{
+                                    backgroundColor: 'rgba(33, 33, 33, 0.9)',
+                                    border: '2px dashed rgba(211, 47, 66, 0.4)',
+                                    boxShadow: '0 0 0 4px rgba(211, 47, 66, 0.15)',
+                                }}
                             >
                                 <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
                                 <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>

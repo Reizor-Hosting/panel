@@ -34,15 +34,15 @@
 }
 
 .primary {
-    @apply bg-blue-600 text-blue-50;
-    @apply hover:bg-blue-500 active:bg-blue-500 focus:ring-blue-400 focus:ring-opacity-75;
+    @apply bg-primary-500 text-white;
+    @apply hover:bg-primary-400 active:bg-primary-400 focus:ring-primary-300 focus:ring-opacity-75;
 
     &.secondary {
-        @apply hover:bg-blue-600 active:bg-blue-600;
+        @apply hover:bg-primary-500 active:bg-primary-500;
     }
 
     &:disabled {
-        @apply bg-blue-500/75 text-blue-200/75;
+        @apply bg-primary-500/75 text-white/75;
     }
 }
 
@@ -60,14 +60,45 @@
 }
 
 .danger {
-    @apply bg-red-600 text-gray-50;
-    @apply hover:bg-red-500 active:bg-red-500 focus:ring-red-400 focus:ring-opacity-75;
+    background-color: #dc2626;
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #b91c1c;
+    @apply hover:bg-red-700 active:bg-red-700 focus:ring-red-500 focus:ring-opacity-75;
+
+    &:hover:not(:disabled) {
+        background-color: #b91c1c;
+        border-color: #991b1b;
+    }
 
     &.secondary {
-        @apply hover:bg-red-600 active:bg-red-600;
+        @apply hover:bg-red-700 active:bg-red-700;
     }
 
     &:disabled {
-        @apply bg-red-600/75 text-red-50/75;
+        background-color: rgba(220, 38, 38, 0.5);
+        color: rgba(255, 255, 255, 0.6);
+        border-color: rgba(185, 28, 28, 0.5);
+    }
+}
+
+.success {
+    background-color: #16a34a;
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid #15803d;
+    @apply hover:bg-green-600 active:bg-green-600 focus:ring-green-400 focus:ring-opacity-75;
+
+    &:hover:not(:disabled) {
+        background-color: #15803d;
+        border-color: #166534;
+    }
+
+    &.secondary {
+        @apply hover:bg-green-600 active:bg-green-600;
+    }
+
+    &:disabled {
+        background-color: rgba(22, 163, 74, 0.5);
+        color: rgba(255, 255, 255, 0.6);
+        border-color: rgba(21, 128, 61, 0.5);
     }
 }

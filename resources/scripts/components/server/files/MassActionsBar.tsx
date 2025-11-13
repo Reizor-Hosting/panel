@@ -95,7 +95,15 @@ const MassActionsBar = () => {
                 <Portal>
                     <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
                         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-                            <div css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50`}>
+                            <div 
+                                css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 border`}
+                                style={{
+                                    backgroundColor: 'rgba(48, 48, 48, 0.95)',
+                                    borderColor: 'rgba(211, 47, 66, 0.3)',
+                                    backdropFilter: 'blur(10px)',
+                                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                                }}
+                            >
                                 <Button onClick={() => setShowMove(true)}>Move</Button>
                                 <Button onClick={onClickCompress}>Archive</Button>
                                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
