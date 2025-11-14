@@ -7,6 +7,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 import ChangeNestEggBox from '@/components/server/settings/ChangeNestEggBox';
+import GTNHVersionSwitcherBox from '@/components/server/settings/GTNHVersionSwitcherBox';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
@@ -22,6 +23,7 @@ export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const node = ServerContext.useStoreState((state) => state.server.data!.node);
     const sftp = ServerContext.useStoreState((state) => state.server.data!.sftpDetails, isEqual);
+    const eggName = ServerContext.useStoreState((state) => state.server.data!.eggName);
 
     return (
         <ServerContentBlock title={'Settings'}>
@@ -77,6 +79,13 @@ export default () => {
                             <RenameServerBox />
                         </div>
                     </Can>
+                    {eggName === 'GregTech: New Horizons' && (
+                        <Can action={'settings.reinstall'}>
+                            <div css={tw`mb-6 md:mb-10`}>
+                                <GTNHVersionSwitcherBox />
+                            </div>
+                        </Can>
+                    )}
                     <Can action={'settings.reinstall'}>
                         <ReinstallServerBox />
                         <div css={tw`mt-6 md:mt-10`}>

@@ -111,7 +111,9 @@ export default () => {
                     <InstallListener />
                     <TransferListener />
                     <WebsocketHandler />
-                    {inConflictState && !location.pathname.endsWith(`/server/${id}`) ? (
+                    {inConflictState &&
+                    !location.pathname.endsWith(`/server/${id}`) &&
+                    !location.pathname.includes('/settings/gtnh-files') ? (
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>

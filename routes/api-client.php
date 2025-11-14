@@ -150,6 +150,10 @@ Route::group([
         Route::post('/change-nest-egg', [Client\Servers\SettingsController::class, 'changeNestEgg']);
         Route::put('/docker-image', [Client\Servers\SettingsController::class, 'dockerImage']);
     });
+
+    Route::group(['prefix' => '/gtnh'], function () {
+        Route::get('/versions', [Client\Servers\GTNHVersionController::class, 'index']);
+    });
 });
 
 Route::prefix('/extensions/serversplitter')->group(base_path('routes/client-serversplitter.php'));

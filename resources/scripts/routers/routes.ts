@@ -8,6 +8,7 @@ import NetworkContainer from '@/components/server/network/NetworkContainer';
 import StartupContainer from '@/components/server/startup/StartupContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
+import GTNHFileSelectionContainer from '@/components/server/settings/GTNHFileSelectionContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
@@ -134,6 +135,12 @@ export default {
             permission: ['settings.*', 'file.sftp'],
             name: 'Settings',
             component: SettingsContainer,
+        },
+        {
+            path: '/settings/gtnh-files',
+            permission: 'settings.reinstall',
+            name: undefined,
+            component: GTNHFileSelectionContainer,
         },
         {
             path: '/activity',
