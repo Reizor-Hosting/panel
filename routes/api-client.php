@@ -153,6 +153,7 @@ Route::group([
 
     Route::group(['prefix' => '/gtnh'], function () {
         Route::get('/versions', [Client\Servers\GTNHVersionController::class, 'index']);
+        // Note: artifact-proxy route is defined in RouteServiceProvider to bypass auth middleware
     });
 });
 

@@ -189,4 +189,21 @@ return [
     'telemetry' => [
         'enabled' => env('PTERODACTYL_TELEMETRY_ENABLED', true),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Docker Settings
+    |--------------------------------------------------------------------------
+    |
+    | Settings for Docker container interactions. Primarily used for local
+    | development when the panel needs to be accessible from within containers.
+    */
+
+    'docker' => [
+        // URL that Wings containers can use to reach the panel
+        // For local development with Docker Desktop: http://host.docker.internal
+        // For Linux Docker: http://172.17.0.1 (or your docker0 gateway IP)
+        // Leave empty to auto-detect based on APP_URL
+        'panel_url' => env('DOCKER_PANEL_URL', null),
+    ],
 ];

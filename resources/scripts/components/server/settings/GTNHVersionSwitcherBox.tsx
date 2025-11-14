@@ -99,7 +99,14 @@ export default () => {
         setLoading(true);
         fetchVersionsByType(uuid, activeTab)
             .then((fetchedVersions) => {
-                setVersions(fetchedVersions);
+                // Filter out Java 8 versions, only show Java 17-25
+                const filteredVersions = fetchedVersions.filter((version) => {
+                    const lowerName = version.name.toLowerCase();
+                    return (
+                        !lowerName.includes('java-8') && !lowerName.includes('java8') && !lowerName.includes('java_8')
+                    );
+                });
+                setVersions(filteredVersions);
                 setSelectedVersion(null);
             })
             .catch((error) => {

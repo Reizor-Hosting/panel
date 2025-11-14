@@ -20,6 +20,8 @@ import deleteServerFiles from '@/api/server/gtnh/deleteServerFiles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import getServer from '@/api/server/getServer';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import { SocketEvent } from '@/components/server/events';
 
 const SummaryBox = styled.div`
     ${tw`mt-4 p-3 rounded border`};
@@ -112,6 +114,51 @@ const StepDescription = styled.p<{ $status: 'pending' | 'active' | 'complete' }>
             : 'rgba(255, 255, 255, 0.4)'};
 `;
 
+const InstallOutputContainer = styled.div`
+    ${tw`mt-6 rounded-lg overflow-hidden`};
+    border: 1px solid rgba(211, 47, 66, 0.3);
+    background: rgba(15, 15, 15, 0.8);
+`;
+
+const InstallOutputHeader = styled.div`
+    ${tw`px-4 py-2 border-b`};
+    border-color: rgba(211, 47, 66, 0.3);
+    background: rgba(24, 24, 24, 0.9);
+`;
+
+const InstallOutputContent = styled.div`
+    ${tw`p-4 font-mono text-xs overflow-y-auto`};
+    max-height: 400px;
+    background: rgba(10, 10, 10, 0.95);
+    color: rgba(255, 255, 255, 0.85);
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(211, 47, 66, 0.4);
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(211, 47, 66, 0.6);
+    }
+`;
+
+const OutputLine = styled.div`
+    ${tw`mb-1`};
+    white-space: pre-wrap;
+    word-break: break-all;
+`;
+
+// Memoized output line component to prevent unnecessary re-renders
+const MemoizedOutputLine = React.memo(({ children }: { children: string }) => <OutputLine>{children}</OutputLine>);
+
 interface LocationState {
     selectedVersion?: GTNHVersion;
 }
@@ -126,6 +173,10 @@ export default () => {
     const [isLoading, setIsLoading] = useState(true);
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+    const [installOutput, setInstallOutput] = useState<string[]>([]);
+    const outputRef = React.useRef<HTMLDivElement>(null);
+    const outputBufferRef = React.useRef<string[]>([]);
+    const flushTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const steps = [
@@ -136,6 +187,54 @@ export default () => {
     ];
 
     const selectedVersion = location.state?.selectedVersion;
+
+    // Flush the output buffer to state
+    const flushOutputBuffer = React.useCallback(() => {
+        if (outputBufferRef.current.length > 0) {
+            setInstallOutput((prev) => {
+                const combined = [...prev, ...outputBufferRef.current];
+                // Keep only the last 1000 lines to prevent memory issues
+                return combined.slice(-1000);
+            });
+            outputBufferRef.current = [];
+        }
+    }, []);
+
+    // Listen for install output messages from the websocket
+    // Buffer the output and flush periodically to prevent lag
+    useWebsocketEvent(SocketEvent.INSTALL_OUTPUT, (output: string) => {
+        outputBufferRef.current.push(output);
+
+        // Clear existing timer
+        if (flushTimerRef.current) {
+            clearTimeout(flushTimerRef.current);
+        }
+
+        // Flush after 100ms of no new output, or immediately if buffer is large
+        if (outputBufferRef.current.length > 50) {
+            flushOutputBuffer();
+        } else {
+            flushTimerRef.current = setTimeout(() => {
+                flushOutputBuffer();
+            }, 100);
+        }
+    });
+
+    // Auto-scroll to bottom when new output arrives
+    useEffect(() => {
+        if (outputRef.current) {
+            outputRef.current.scrollTop = outputRef.current.scrollHeight;
+        }
+    }, [installOutput]);
+
+    // Cleanup timer on unmount
+    useEffect(() => {
+        return () => {
+            if (flushTimerRef.current) {
+                clearTimeout(flushTimerRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (!selectedVersion) {
@@ -256,6 +355,8 @@ export default () => {
 
             // Step 2: Changing pack link variable
             setCurrentStep(2);
+
+            // The backend will automatically detect and proxy GitHub artifact URLs
             await updateServerVariable(uuid, 'PACK_LINK', selectedVersion.url);
             markStepComplete(2);
 
@@ -276,9 +377,9 @@ export default () => {
             });
 
             // Wait a moment to show the final completion state
-            setTimeout(() => {
-                history.push(`/server/${uuid}`);
-            }, 2000);
+            // setTimeout(() => {
+            // history.push(`/server/${uuid}`);
+            // }, 2000);
         } catch (error: any) {
             console.error('Failed to change version:', error);
             addFlash({
@@ -332,6 +433,21 @@ export default () => {
                             Please wait while we prepare your server for the new version...
                         </p>
                     </div>
+
+                    {installOutput.length > 0 && currentStep === 3 && (
+                        <InstallOutputContainer>
+                            <InstallOutputHeader>
+                                <h4 css={tw`text-sm font-semibold text-neutral-200`}>
+                                    Installer Output {installOutput.length >= 1000 && '(showing last 1000 lines)'}
+                                </h4>
+                            </InstallOutputHeader>
+                            <InstallOutputContent ref={outputRef}>
+                                {installOutput.map((line, index) => (
+                                    <MemoizedOutputLine key={index}>{line}</MemoizedOutputLine>
+                                ))}
+                            </InstallOutputContent>
+                        </InstallOutputContainer>
+                    )}
                 </ProgressContainer>
             ) : (
                 <>

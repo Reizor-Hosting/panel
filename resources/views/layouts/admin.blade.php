@@ -126,6 +126,11 @@
                                 <i class="fa fa-th-large"></i> <span>Nests</span>
                             </a>
                         </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.gtnh') ?: 'active' }}">
+                            <a href="{{ route('admin.gtnh') }}">
+                                <i class="fa fa-cog"></i> <span>GTNH Management</span>
+                            </a>
+                        </li>
                         <li class="header">AINX ADDONS</li>
                         @foreach (app()->make(\Pterodactyl\BlueprintFramework\Libraries\ExtensionLibrary\Admin\BlueprintAdminLibrary::class)->extensions() as $extension)
                             <li class="{{ !starts_with(Route::currentRouteName(), "admin.extensions.{$extension['identifier']}.index") ?: 'active' }}">

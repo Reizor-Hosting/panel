@@ -32,8 +32,19 @@ class AppServiceProvider extends ServiceProvider
         // doesn't, and it triggers a lot of support requests, so lets just head it off here.
         //
         // @see https://github.com/pterodactyl/panel/issues/3623
+        //
+        // Exception: Don't force HTTPS for the GTNH artifact proxy endpoint, as it needs to be
+        // accessible from Docker containers using HTTP internal addresses (e.g. host.docker.internal)
         if (Str::startsWith(config('app.url') ?? '', 'https://')) {
             URL::forceScheme('https');
+            
+            // Override scheme forcing for specific routes that need HTTP access from containers
+            $this->app->booted(function () {
+                $request = request();
+                if ($request && Str::contains($request->path(), 'gtnh/artifact-proxy')) {
+                    URL::forceScheme($request->getScheme());
+                }
+            });
         }
 
         Relation::enforceMorphMap([

@@ -21,6 +21,7 @@ const StartupContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const eggName = ServerContext.useStoreState((state) => state.server.data!.eggName);
     const variables = ServerContext.useStoreState(
         ({ server }) => ({
             variables: server.data!.variables,
@@ -126,9 +127,17 @@ const StartupContainer = () => {
             </div>
             <h3 css={tw`mt-8 mb-2 text-2xl`}>Variables</h3>
             <div css={tw`grid gap-8 md:grid-cols-2`}>
-                {data.variables.map((variable) => (
-                    <VariableBox key={variable.envVariable} variable={variable} />
-                ))}
+                {data.variables
+                    .filter((variable) => {
+                        // Hide PACK_LINK for GTNH servers (managed via version switcher)
+                        if (eggName === 'GregTech: New Horizons' && variable.envVariable === 'PACK_LINK') {
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map((variable) => (
+                        <VariableBox key={variable.envVariable} variable={variable} />
+                    ))}
             </div>
         </ServerContentBlock>
     );

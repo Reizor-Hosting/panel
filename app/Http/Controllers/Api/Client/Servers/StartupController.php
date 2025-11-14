@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Illuminate\Support\Facades\URL;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Services\Servers\StartupCommandService;
@@ -65,25 +66,56 @@ class StartupController extends ClientApiController
         // Revalidate the variable value using the egg variable specific validation rules for it.
         $this->validate($request, ['value' => $variable->rules]);
 
+        $value = $request->input('value') ?? '';
+
+        // Auto-proxy GitHub artifact URLs for GTNH
+        if ($variable->env_variable === 'PACK_LINK' && 
+            str_contains($value, 'api.github.com') && 
+            str_contains($value, '/artifacts/')) {
+            // Convert GitHub artifact URL to use panel proxy with signed URL (valid for 24 hours)
+            // Force URL generation to use APP_URL (for Docker container access in local dev)
+            $appUrl = config('app.url');
+            $scheme = parse_url($appUrl, PHP_URL_SCHEME);
+            
+            // Temporarily override the URL generator to use our APP_URL and scheme
+            URL::forceRootUrl($appUrl);
+            URL::forceScheme($scheme);
+            
+            $value = URL::temporarySignedRoute(
+                'api:client:servers.gtnh.artifact-proxy',
+                now()->addHours(24),
+                [
+                    'server' => $server->uuid,
+                    'url' => $value,
+                ]
+            );
+            
+            // Reset URL generator to HTTPS if APP_URL was HTTPS
+            URL::forceRootUrl(null);
+            if (str_starts_with(config('app.url'), 'https://')) {
+                URL::forceScheme('https');
+            }
+        }
+
         $this->repository->updateOrCreate([
             'server_id' => $server->id,
             'variable_id' => $variable->id,
         ], [
-            'variable_value' => $request->input('value') ?? '',
+            'variable_value' => $value,
         ]);
 
         $variable = $variable->refresh();
-        $variable->server_value = $request->input('value');
+        $variable->server_value = $value;
 
         $startup = $this->startupCommandService->handle($server);
 
-        if ($variable->env_variable !== $request->input('value')) {
+        if ($original !== $value) {
             Activity::event('server:startup.edit')
                 ->subject($variable)
                 ->property([
                     'variable' => $variable->env_variable,
                     'old' => $original,
-                    'new' => $request->input('value'),
+                    'new' => $value,
                 ])
                 ->log();
         }

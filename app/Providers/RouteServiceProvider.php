@@ -62,6 +62,14 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('/api/remote')
                 ->scopeBindings()
                 ->group(base_path('routes/api-remote.php'));
+            
+            // GTNH artifact proxy - completely outside auth middleware, uses signed URLs
+            // Only apply throttle and JSON validation, no auth required (signature validates access)
+            Route::middleware(['throttle:api.client', \Pterodactyl\Http\Middleware\Api\IsValidJson::class])
+                ->prefix('/api/client')
+                ->scopeBindings()
+                ->get('/servers/{server}/gtnh/artifact-proxy', [\Pterodactyl\Http\Controllers\Api\Client\Servers\GTNHArtifactProxyController::class, 'download'])
+                ->name('api:client:servers.gtnh.artifact-proxy');
         });
     }
 

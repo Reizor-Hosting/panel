@@ -17,9 +17,11 @@ class GetUserPermissionsService
         if ($user->root_admin || $user->id === $server->owner_id) {
             $permissions = ['*'];
 
+            // Server owners should be able to see install output too
+            $permissions[] = 'admin.websocket.install';
+
             if ($user->root_admin) {
                 $permissions[] = 'admin.websocket.errors';
-                $permissions[] = 'admin.websocket.install';
                 $permissions[] = 'admin.websocket.transfer';
             }
 

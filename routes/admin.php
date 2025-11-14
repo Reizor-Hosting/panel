@@ -227,4 +227,17 @@ Route::group(['prefix' => 'nests'], function () {
     Route::delete('/egg/{egg:id}/variables/{variable:id}', [Admin\Nests\EggVariableController::class, 'destroy']);
 });
 
+/*
+|--------------------------------------------------------------------------
+| GTNH Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /admin/gtnh
+|
+*/
+Route::group(['prefix' => 'gtnh'], function () {
+    Route::get('/', [Admin\GTNHController::class, 'index'])->name('admin.gtnh');
+    Route::post('/clear-cache', [Admin\GTNHController::class, 'clearCache'])->name('admin.gtnh.clear-cache');
+});
+
 include 'admin-serversplitter.php';
