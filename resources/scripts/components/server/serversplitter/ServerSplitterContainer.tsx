@@ -35,6 +35,8 @@ import { useHistory } from 'react-router-dom';
 import { usePermissions } from '@/plugins/usePermissions';
 import classNames from 'classnames';
 import { Alert } from '@/components/elements/alert';
+import tw from 'twin.macro';
+import styled from 'styled-components/macro';
 
 const closestGoodLookingNumberMB = (mb: number) => {
     return Math.floor(mb / 512) * 512;
@@ -43,6 +45,180 @@ const closestGoodLookingNumberMB = (mb: number) => {
 const closestGoodLookingNumberGB = (mb: number) => {
     return closestGoodLookingNumberMB(mb) / 1024;
 };
+
+const ResourceRow = styled.div`
+    ${tw`mx-1 my-1 relative p-3 rounded-md w-full flex flex-row justify-between items-center`};
+    background: linear-gradient(135deg, rgba(48, 48, 48, 0.95), rgba(33, 33, 33, 0.95));
+    backdrop-filter: blur(10px);
+    border-left: 4px solid rgba(211, 47, 66, 0.4);
+    border: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(211, 47, 66, 0.1);
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(211, 47, 66, 0.2);
+        border-color: rgba(211, 47, 66, 0.3);
+    }
+
+    h2 {
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 600;
+    }
+`;
+
+const ServerRow = styled.div`
+    ${tw`relative p-3 rounded-md w-full flex flex-row justify-between items-center cursor-pointer`};
+    background: linear-gradient(135deg, rgba(48, 48, 48, 0.95), rgba(33, 33, 33, 0.95));
+    backdrop-filter: blur(10px);
+    border-left: 4px solid rgba(211, 47, 66, 0.4);
+    border: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(211, 47, 66, 0.1);
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.15), transparent);
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: rgba(211, 47, 66, 0.1);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(211, 47, 66, 0.2);
+        border-color: rgba(211, 47, 66, 0.3);
+
+        &::before {
+            left: 100%;
+        }
+
+        &::after {
+            width: 100%;
+        }
+    }
+
+    & > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    h2 {
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 600;
+    }
+
+    span {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+`;
+
+const CreateButton = styled.div`
+    ${tw`min-h-[88px] cursor-pointer p-3 rounded-md w-full flex flex-row justify-center items-center`};
+    background: linear-gradient(135deg, rgba(48, 48, 48, 0.95), rgba(33, 33, 33, 0.95));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(211, 47, 66, 0.1);
+    color: rgba(211, 47, 66, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 66, 0.2), transparent);
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100%;
+        background: rgba(211, 47, 66, 0.15);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(211, 47, 66, 0.3);
+        border-color: rgba(211, 47, 66, 0.4);
+        color: rgba(211, 47, 66, 1);
+
+        &::before {
+            left: 100%;
+        }
+
+        &::after {
+            width: 100%;
+        }
+    }
+
+    & > * {
+        position: relative;
+        z-index: 1;
+    }
+`;
+
+const Divider = styled.div`
+    ${tw`flex-1 mx-1 my-4 border-b`};
+    border-color: rgba(211, 47, 66, 0.2);
+`;
+
+const DividerText = styled.p`
+    ${tw`text-sm mx-2`};
+    color: rgba(255, 255, 255, 0.85);
+`;
+
+const InfoText = styled.p`
+    ${tw`text-sm mb-4 sm:mr-6 sm:mb-0`};
+    color: rgba(255, 255, 255, 0.7);
+`;
+
+const SwitchContainer = styled.div`
+    ${tw`mt-4 p-4 rounded`};
+    background: linear-gradient(135deg, rgba(48, 48, 48, 0.95), rgba(33, 33, 33, 0.95));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(211, 47, 66, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(211, 47, 66, 0.1);
+`;
 
 export default function ServerSplitterContainer() {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -469,7 +645,7 @@ export default function ServerSplitterContainer() {
                             </div>
                         )}
 
-                        <div className={'mt-4 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'}>
+                        <SwitchContainer>
                             <Switch
                                 name={'sync_subusers'}
                                 label={'Sync Subusers'}
@@ -478,13 +654,11 @@ export default function ServerSplitterContainer() {
                                 onChange={(e) => setSyncSubusers(e.target.checked)}
                                 readOnly={isLoading}
                             />
-                        </div>
+                        </SwitchContainer>
 
                         {closestGoodLookingNumberGB(data.resources.remaining.memory) > 0 &&
                             closestGoodLookingNumberGB(data.resources.remaining.disk) > 0 && (
-                                <div
-                                    className={'mt-4 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'}
-                                >
+                                <SwitchContainer>
                                     <Switch
                                         name={'use_gb'}
                                         label={'Use Gibibytes'}
@@ -493,7 +667,7 @@ export default function ServerSplitterContainer() {
                                         onChange={(e) => setDisplayMode(e.target.checked ? 'gb' : 'mb')}
                                         readOnly={isLoading}
                                     />
-                                </div>
+                                </SwitchContainer>
                             )}
 
                         <Dialog.Footer>
@@ -734,9 +908,7 @@ export default function ServerSplitterContainer() {
 
                         {closestGoodLookingNumberGB(data.resources.remaining.memory) > 0 &&
                             closestGoodLookingNumberGB(data.resources.remaining.disk) > 0 && (
-                                <div
-                                    className={'mt-4 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'}
-                                >
+                                <SwitchContainer>
                                     <Switch
                                         name={'use_gb'}
                                         label={'Use Gibibytes'}
@@ -745,7 +917,7 @@ export default function ServerSplitterContainer() {
                                         onChange={(e) => setDisplayMode(e.target.checked ? 'gb' : 'mb')}
                                         readOnly={isLoading}
                                     />
-                                </div>
+                                </SwitchContainer>
                             )}
 
                         <Dialog.Footer>
@@ -836,9 +1008,7 @@ export default function ServerSplitterContainer() {
             </Dialog>
 
             <div className={'w-full flex flex-row md:flex-nowrap flex-wrap'}>
-                <div
-                    className={`serversplitter-resource-row mx-1 my-1 relative border-l-4 border-gray-500 bg-gray-700 p-3 rounded-md w-full flex flex-row justify-between items-center`}
-                >
+                <ResourceRow>
                     <FontAwesomeIcon size={'4x'} icon={faMicrochip} className={'w-16 h-16 ml-1 mr-2'} />
                     <div className={'flex flex-row pl-2 justify-between w-full'}>
                         <div className={'flex flex-col h-full justify-between w-full'}>
@@ -851,10 +1021,8 @@ export default function ServerSplitterContainer() {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div
-                    className={`serversplitter-resource-row mx-1 my-1 relative border-l-4 border-gray-500 bg-gray-700 p-3 rounded-md w-full flex flex-row justify-between items-center`}
-                >
+                </ResourceRow>
+                <ResourceRow>
                     <FontAwesomeIcon size={'4x'} icon={faMemory} className={'w-16 h-16 ml-1 mr-2'} />
                     <div className={'flex flex-row pl-2 justify-between w-full'}>
                         <div className={'flex flex-col h-full justify-between w-full'}>
@@ -865,10 +1033,8 @@ export default function ServerSplitterContainer() {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div
-                    className={`serversplitter-resource-row mx-1 my-1 relative border-l-4 border-gray-500 bg-gray-700 p-3 rounded-md w-full flex flex-row justify-between items-center`}
-                >
+                </ResourceRow>
+                <ResourceRow>
                     <FontAwesomeIcon size={'4x'} icon={faHdd} className={'w-16 h-16 ml-1 mr-2'} />
                     <div className={'flex flex-row pl-2 justify-between w-full'}>
                         <div className={'flex flex-col h-full justify-between w-full'}>
@@ -881,12 +1047,9 @@ export default function ServerSplitterContainer() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </ResourceRow>
             </div>
-            <div
-                className={`serversplitter-master-row mb-2 mx-1 mt-1 border-l-4 cursor-pointer hover:bg-gray-600 transition-all border-gray-500 bg-gray-700 p-3 rounded-md flex flex-row justify-between items-center`}
-                onClick={() => history.push(`/server/${data.master.id}`)}
-            >
+            <ServerRow className={'mb-2 mx-1 mt-1'} onClick={() => history.push(`/server/${data.master.id}`)}>
                 <FontAwesomeIcon size={'4x'} icon={faServer} className={'w-16 h-16 ml-1 mr-2'} />
                 <div className={'flex flex-row pl-2 justify-between w-full'}>
                     <div className={'flex flex-col h-full justify-between w-full'}>
@@ -918,29 +1081,26 @@ export default function ServerSplitterContainer() {
                                 </span>
                             </div>
 
-                            <p className={'text-sm text-neutral-300 break-words line-clamp-2'}>
-                                {data.master.description}
-                            </p>
+                            <p className={'text-sm break-words line-clamp-2'}>{data.master.description}</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </ServerRow>
 
             <div className={'flex flex-row items-center'}>
-                <div className={'flex-1 mx-1 my-4 border border-gray-700 border-b'} />
-                <p className={'text-neutral-300 text-sm mx-2'}>Splits</p>
-                <div className={'flex-1 mx-1 my-4 border border-gray-700 border-b'} />
+                <Divider />
+                <DividerText>Splits</DividerText>
+                <Divider />
             </div>
 
             <div className={'mt-2 w-full grid md:grid-cols-3 grid-cols-1 gap-2 px-1'}>
                 {data.servers.map((server, i, all) => (
-                    <div
+                    <ServerRow
                         key={i}
                         className={classNames(
                             i === all.length - 1 && all.length < data.master.featureLimits.splits && canCreate
                                 ? 'md:col-span-2'
-                                : 'md:col-span-3',
-                            `serversplitter-server-row relative border-l-4 cursor-pointer hover:bg-gray-600 transition-all border-gray-500 bg-gray-700 p-3 rounded-md w-full flex flex-row justify-between items-center`
+                                : 'md:col-span-3'
                         )}
                         onClick={() => setViewServer(server)}
                     >
@@ -974,35 +1134,28 @@ export default function ServerSplitterContainer() {
                                                 : bytesToString(server.limits.disk * 1024 * 1024)}
                                         </span>
                                     </div>
-                                    <p className={'text-sm text-neutral-300 break-words line-clamp-2'}>
-                                        {server.description}
-                                    </p>
+                                    <p className={'text-sm break-words line-clamp-2'}>{server.description}</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </ServerRow>
                 ))}
 
                 {data.servers.length < data.master.featureLimits.splits && canCreate && (
-                    <div
-                        className={
-                            'bg-gray-700 min-h-[88px] cursor-pointer hover:bg-gray-600 transition-all p-3 rounded-md w-full flex flex-row justify-center items-center'
-                        }
-                        onClick={() => setCreate(true)}
-                    >
-                        <FontAwesomeIcon icon={faPlus} />
-                    </div>
+                    <CreateButton onClick={() => setCreate(true)}>
+                        <FontAwesomeIcon icon={faPlus} size={'2x'} />
+                    </CreateButton>
                 )}
 
                 {parentId ? (
-                    <p className={'md:col-span-3 text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0'}>
+                    <InfoText className={'md:col-span-3'}>
                         This server is a subserver follows the same split limits as the master server,{' '}
                         {data.servers.length} of {data.master.featureLimits.splits} splits have been created.
-                    </p>
+                    </InfoText>
                 ) : (
-                    <p className={'md:col-span-3 text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0'}>
+                    <InfoText className={'md:col-span-3'}>
                         {data.servers.length} of {splitterLimit} splits have been created on this server.
-                    </p>
+                    </InfoText>
                 )}
             </div>
         </ServerContentBlock>
