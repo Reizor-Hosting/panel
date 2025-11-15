@@ -574,7 +574,7 @@ export const TopNavigation = ({
                             </ButtonGroup>
                         )}
                         {rootAdmin && (
-                            <ButtonGroup className={'desktop-only'}>
+                            <ButtonGroup>
                                 <Tooltip placement={'bottom'} content={'Admin'}>
                                     <NavButton as={'a'} href={'/admin'}>
                                         <FontAwesomeIcon icon={faCogs} />
