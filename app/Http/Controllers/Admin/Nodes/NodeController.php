@@ -27,7 +27,8 @@ class NodeController extends Controller
             Node::query()->with('location')->withCount('servers')
         )
             ->allowedFilters(['uuid', 'name'])
-            ->allowedSorts(['id'])
+            ->allowedSorts(['id', 'name'])
+            ->defaultSort('name')
             ->paginate(25);
 
         return $this->view->make('admin.nodes.index', ['nodes' => $nodes]);
