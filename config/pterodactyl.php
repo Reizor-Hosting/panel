@@ -192,6 +192,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Server Settings
+    |--------------------------------------------------------------------------
+    |
+    | Settings related to server creation and management.
+    */
+
+    'servers' => [
+        // Automatically assign free CPU threads when creating servers
+        'auto_assign_threads' => env('PTERODACTYL_AUTO_ASSIGN_THREADS', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Docker Settings
     |--------------------------------------------------------------------------
     |

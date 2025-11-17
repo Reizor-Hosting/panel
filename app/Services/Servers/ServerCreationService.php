@@ -27,6 +27,7 @@ class ServerCreationService
     public function __construct(
         private AllocationSelectionService $allocationSelectionService,
         private ConnectionInterface $connection,
+        private CpuThreadAssignmentService $cpuThreadAssignmentService,
         private DaemonServerRepository $daemonServerRepository,
         private FindViableNodesService $findViableNodesService,
         private ServerRepository $repository,
@@ -76,6 +77,22 @@ class ServerCreationService
         $eggVariableData = $this->validatorService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
             ->handle(Arr::get($data, 'egg_id'), Arr::get($data, 'environment', []));
+
+        // Auto-assign CPU threads if not provided and feature is enabled
+        if (config('pterodactyl.servers.auto_assign_threads', true) && empty($data['threads']) && !empty($data['node_id'])) {
+            // Determine how many threads to assign based on CPU percentage
+            $cpuPercentage = Arr::get($data, 'cpu', 0);
+            $threadsNeeded = $cpuPercentage > 0 ? max(1, (int) ceil($cpuPercentage / 100)) : 1;
+            
+            $assignedThreads = $this->cpuThreadAssignmentService->assignFreeThreads(
+                $data['node_id'],
+                $threadsNeeded
+            );
+            
+            if ($assignedThreads !== null) {
+                $data['threads'] = $assignedThreads;
+            }
+        }
 
         // Due to the design of the Daemon, we need to persist this server to the disk
         // before we can actually create it on the Daemon.

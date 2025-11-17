@@ -164,10 +164,14 @@
                         <label for="pThreads">CPU Pinning</label>
 
                         <div>
-                            <input type="text" id="pThreads" name="threads" class="form-control" value="{{ old('threads') }}" />
+                            <input type="text" id="pThreads" name="threads" class="form-control" value="{{ old('threads') }}" placeholder="Auto-assigned if left blank" />
                         </div>
 
-                        <p class="text-muted small"><strong>Advanced:</strong> Enter the specific CPU threads that this process can run on, or leave blank to allow all threads. This can be a single number, or a comma separated list. Example: <code>0</code>, <code>0-1,3</code>, or <code>0,1,3,4</code>.</p>
+                        <p class="text-muted small"><strong>Advanced:</strong> Enter the specific CPU threads that this process can run on, or leave blank to auto-assign free threads. This can be a single number, or a comma separated list. Example: <code>0</code>, <code>0-1,3</code>, or <code>0,1,3,4</code>.
+                        @if(config('pterodactyl.servers.auto_assign_threads', true))
+                            <br><span class="label label-success"><i class="fa fa-check"></i> Auto-assignment enabled</span>
+                        @endif
+                        </p>
                     </div>
                 </div>
 
