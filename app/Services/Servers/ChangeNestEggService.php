@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
@@ -48,10 +49,23 @@ class ChangeNestEggService
                 // The reinstall will handle cleaning up
             }
 
-            // Update nest_id and egg_id
+            // Delete old server variables since they belong to the old egg
+            $this->connection->table('server_variables')
+                ->where('server_id', $server->id)
+                ->delete();
+
+            // Get the new egg to retrieve its default startup command and image
+            $newEgg = Egg::findOrFail($eggId);
+
+            // Get the default docker image (first one in the list)
+            $defaultImage = array_values($newEgg->docker_images)[0] ?? $newEgg->docker_image;
+
+            // Update nest_id, egg_id, startup command, and docker image
             $this->serverRepository->update($server->id, [
                 'nest_id' => $nestId,
                 'egg_id' => $eggId,
+                'startup' => $newEgg->startup,
+                'image' => $defaultImage,
             ]);
 
             // Refresh the server model to get updated data

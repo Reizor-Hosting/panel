@@ -36,13 +36,21 @@ class EggParserService
      */
     public function fillFromParsed(Egg $model, array $parsed): Egg
     {
+        $fileDenylist = Arr::get($parsed, 'file_denylist');
+        if (!is_null($fileDenylist)) {
+            $fileDenylist = Collection::make($fileDenylist)
+                ->filter(fn ($value) => !empty($value))
+                ->toArray();
+            // If after filtering we have an empty array, set to null to match model defaults
+            $fileDenylist = empty($fileDenylist) ? null : $fileDenylist;
+        }
+
         return $model->forceFill([
             'name' => Arr::get($parsed, 'name'),
             'description' => Arr::get($parsed, 'description'),
             'features' => Arr::get($parsed, 'features'),
             'docker_images' => Arr::get($parsed, 'docker_images'),
-            'file_denylist' => Collection::make(Arr::get($parsed, 'file_denylist'))
-                ->filter(fn ($value) => !empty($value)),
+            'file_denylist' => $fileDenylist,
             'update_url' => Arr::get($parsed, 'meta.update_url'),
             'config_files' => Arr::get($parsed, 'config.files'),
             'config_startup' => Arr::get($parsed, 'config.startup'),
