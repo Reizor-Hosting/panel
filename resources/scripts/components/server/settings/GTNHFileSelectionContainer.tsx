@@ -17,6 +17,8 @@ import { Alert } from '@/components/elements/alert';
 import { GTNHVersion } from '@/api/server/gtnh/getGTNHVersions';
 import getServerFiles from '@/api/server/gtnh/getServerFiles';
 import deleteServerFiles from '@/api/server/gtnh/deleteServerFiles';
+import compressFiles from '@/api/server/files/compressFiles';
+import decompressFiles from '@/api/server/files/decompressFiles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import getServer from '@/api/server/getServer';
@@ -174,6 +176,7 @@ export default () => {
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
     const [installOutput, setInstallOutput] = useState<string[]>([]);
+    const [backupArchiveName, setBackupArchiveName] = useState<string | null>(null);
     const outputRef = React.useRef<HTMLDivElement>(null);
     const outputBufferRef = React.useRef<string[]>([]);
     const flushTimerRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -182,8 +185,10 @@ export default () => {
     const steps = [
         { title: 'Retrieving files to save', description: 'Analyzing your server files...' },
         { title: 'Deleting files', description: 'Removing files not selected for preservation...' },
+        { title: 'Creating backup archive', description: 'Compressing selected files into archive...' },
         { title: 'Changing pack link variable', description: 'Updating PACK_LINK environment variable...' },
         { title: 'Reinstalling', description: 'Installing new version and starting server...' },
+        { title: 'Restoring files', description: 'Extracting backed up files from archive...' },
     ];
 
     const selectedVersion = location.state?.selectedVersion;
@@ -341,7 +346,7 @@ export default () => {
             const filesToDelete = await getFilesToDelete('/');
             markStepComplete(0);
 
-            // Step 1: Deleting files
+            // Step 1: Deleting files not selected for preservation
             setCurrentStep(1);
             if (filesToDelete.length > 0) {
                 // Delete in batches to avoid overwhelming the API
@@ -353,22 +358,62 @@ export default () => {
             }
             markStepComplete(1);
 
-            // Step 2: Changing pack link variable
+            // Step 2: Creating backup archive of files to keep
             setCurrentStep(2);
+            let archiveName: string | null = null;
+            if (selectedFilePaths.size > 0) {
+                console.log('[GTNH Backup] Creating backup archive of selected files');
+                // Create a compressed archive of the files we want to preserve
+                // Use a unique name with timestamp to avoid conflicts with the installation
+                const filesToBackup = Array.from(selectedFilePaths).map((path) => path.substring(1)); // Remove leading slash
+                const archive = await compressFiles(uuid, '/', filesToBackup);
+                archiveName = archive.name;
+                setBackupArchiveName(archiveName);
+                console.log('[GTNH Backup] Archive created:', archiveName);
+            }
+            markStepComplete(2);
+
+            // Step 3: Changing pack link variable
+            setCurrentStep(3);
 
             // The backend will automatically detect and proxy GitHub artifact URLs
             await updateServerVariable(uuid, 'PACK_LINK', selectedVersion.url);
-            markStepComplete(2);
+            markStepComplete(3);
 
-            // Step 3: Reinstalling - start the reinstall and monitor status
-            setCurrentStep(3);
+            // Step 4: Reinstalling - start the reinstall and monitor status
+            setCurrentStep(4);
             await reinstallServer(uuid);
 
             // Poll until installation is complete
             await pollInstallationStatus();
 
             // Installation complete
-            markStepComplete(3);
+            markStepComplete(4);
+
+            // Step 5: Restoring files from backup archive
+            setCurrentStep(5);
+            if (archiveName) {
+                console.log('[GTNH Restore] Extracting backup archive:', archiveName);
+                try {
+                    // Extract the archive to restore our saved files
+                    await decompressFiles(uuid, '/', archiveName);
+                    console.log('[GTNH Restore] Files restored successfully');
+
+                    // Clean up the archive file
+                    await deleteServerFiles(uuid, [archiveName]);
+                    console.log('[GTNH Restore] Archive cleanup complete');
+                } catch (error) {
+                    console.error('[GTNH Restore] Failed to restore from archive:', error);
+                    // If restore fails, just log it and continue - the server will still work with new files
+                    addFlash({
+                        key: 'settings',
+                        type: 'warning',
+                        message:
+                            'Version upgrade completed but some files could not be restored from backup. Your server may have reverted to default configurations.',
+                    });
+                }
+            }
+            markStepComplete(5);
 
             addFlash({
                 key: 'settings',
@@ -434,7 +479,7 @@ export default () => {
                         </p>
                     </div>
 
-                    {installOutput.length > 0 && currentStep === 3 && (
+                    {installOutput.length > 0 && currentStep === 4 && (
                         <InstallOutputContainer>
                             <InstallOutputHeader>
                                 <h4 css={tw`text-sm font-semibold text-neutral-200`}>
