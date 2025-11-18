@@ -91,8 +91,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', env('MAIL_FROM', 'hello@example.com')),
-        'name' => env('MAIL_FROM_NAME', 'Pterodactyl Panel'),
+        'address' => env('MAIL_FROM_ADDRESS', env('MAIL_FROM', 'noreply@reizorhosting.com')),
+        'name' => env('MAIL_FROM_NAME', 'Reizor Hosting'),
     ],
 
     /*

@@ -4,6 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style type="text/css" rel="stylesheet" media="all">
         /* Media Queries */
@@ -20,47 +21,48 @@
 $style = [
     /* Layout ------------------------------ */
 
-    'body' => 'margin: 0; padding: 0; width: 100%; background-color: #F2F4F6;',
-    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: #F2F4F6;',
+    'body' => 'margin: 0; padding: 0; width: 100%; background-color: #212121;',
+    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: #212121;',
 
     /* Masthead ----------------------- */
 
-    'email-masthead' => 'padding: 25px 0; text-align: center;',
-    'email-masthead_name' => 'font-size: 16px; font-weight: bold; color: #2F3133; text-decoration: none; text-shadow: 0 1px 0 white;',
+    'email-masthead' => 'padding: 30px 0; text-align: center; background-color: #212121; border-bottom: 2px solid rgba(211, 47, 66, 0.3);',
+    'email-masthead_name' => 'font-size: 24px; font-weight: 600; color: #ffffff; text-decoration: none; letter-spacing: 0.5px;',
 
-    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid #EDEFF2; border-bottom: 1px solid #EDEFF2; background-color: #FFF;',
+    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid rgba(211, 47, 66, 0.2); border-bottom: 1px solid rgba(211, 47, 66, 0.2); background-color: #303030;',
     'email-body_inner' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0;',
-    'email-body_cell' => 'padding: 35px;',
+    'email-body_cell' => 'padding: 40px;',
 
     'email-footer' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0; text-align: center;',
-    'email-footer_cell' => 'color: #AEAEAE; padding: 35px; text-align: center;',
+    'email-footer_cell' => 'color: rgba(255, 255, 255, 0.6); padding: 35px; text-align: center;',
 
     /* Body ------------------------------ */
 
     'body_action' => 'width: 100%; margin: 30px auto; padding: 0; text-align: center;',
-    'body_sub' => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid #EDEFF2;',
+    'body_sub' => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid rgba(211, 47, 66, 0.2);',
 
     /* Type ------------------------------ */
 
-    'anchor' => 'color: #3869D4;',
-    'header-1' => 'margin-top: 0; color: #2F3133; font-size: 19px; font-weight: bold; text-align: left;',
-    'paragraph' => 'margin-top: 0; color: #74787E; font-size: 16px; line-height: 1.5em;',
-    'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
+    'anchor' => 'color: #de3e4c; text-decoration: none;',
+    'header-1' => 'margin-top: 0; color: rgba(255, 255, 255, 0.95); font-size: 22px; font-weight: 600; text-align: left;',
+    'paragraph' => 'margin-top: 0; color: rgba(255, 255, 255, 0.85); font-size: 16px; line-height: 1.6em;',
+    'paragraph-sub' => 'margin-top: 0; color: rgba(255, 255, 255, 0.7); font-size: 13px; line-height: 1.5em;',
     'paragraph-center' => 'text-align: center;',
 
     /* Buttons ------------------------------ */
 
-    'button' => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
-                 background-color: #3869D4; border-radius: 3px; color: #ffffff; font-size: 15px; line-height: 25px;
-                 text-align: center; text-decoration: none; -webkit-text-size-adjust: none;',
+    'button' => 'display: block; display: inline-block; min-width: 200px; min-height: 20px; padding: 14px 40px;
+                 background-color: #d32f42; border-radius: 4px; color: #ffffff; font-size: 16px; line-height: 25px;
+                 text-align: center; text-decoration: none; font-weight: 600; -webkit-text-size-adjust: none;
+                 box-shadow: 0 4px 12px rgba(211, 47, 66, 0.3);',
 
-    'button--green' => 'background-color: #22BC66;',
-    'button--red' => 'background-color: #dc4d2f;',
-    'button--blue' => 'background-color: #3869D4;',
+    'button--green' => 'background-color: #22BC66; box-shadow: 0 4px 12px rgba(34, 188, 102, 0.3);',
+    'button--red' => 'background-color: #d32f42; box-shadow: 0 4px 12px rgba(211, 47, 66, 0.3);',
+    'button--blue' => 'background-color: #d32f42; box-shadow: 0 4px 12px rgba(211, 47, 66, 0.3);',
 ];
 ?>
 
-<?php $fontFamily = 'font-family: Arial, \'Helvetica Neue\', Helvetica, sans-serif;'; ?>
+<?php $fontFamily = 'font-family: \'Oswald\', Arial, \'Helvetica Neue\', Helvetica, sans-serif;'; ?>
 
 <body style="{{ $style['body'] }}">
     <table width="100%" cellpadding="0" cellspacing="0">
