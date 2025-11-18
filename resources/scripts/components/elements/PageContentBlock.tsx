@@ -26,7 +26,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                 </ContentContainer>
                 <ContentContainer css={tw`mb-4`}>
                     <p css={tw`text-center text-neutral-500 text-xs`}>
-                        Reizor Hosting&nbsp;&copy; 2015 - {new Date().getFullYear()}
+                        Reizor Hosting & Pterodactyl&nbsp;&copy; 2015 - {new Date().getFullYear()}
                     </p>
                 </ContentContainer>
             </>

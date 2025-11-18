@@ -138,7 +138,7 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             </LoginCard>
         </Form>
         <Copyright>
-            &copy; 2015 - {new Date().getFullYear()}&nbsp;Reizor Hosting
+            &copy; 2015 - {new Date().getFullYear()}&nbsp;Reizor Hosting & Pterodactyl
         </Copyright>
     </Container>
 ));
