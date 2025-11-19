@@ -22,6 +22,7 @@ import decompressFiles from '@/api/server/files/decompressFiles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import getServer from '@/api/server/getServer';
+import getServerResourceUsage from '@/api/server/getServerResourceUsage';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { SocketEvent } from '@/components/server/events';
 
@@ -169,6 +170,8 @@ export default () => {
     const history = useHistory();
     const location = useLocation<LocationState>();
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const status = ServerContext.useStoreState((state) => state.status.value);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
     const [selectedFilePaths, setSelectedFilePaths] = useState<Set<string>>(new Set());
     const [worldFolderName, setWorldFolderName] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -176,13 +179,13 @@ export default () => {
     const [currentStep, setCurrentStep] = useState<number>(0);
     const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
     const [installOutput, setInstallOutput] = useState<string[]>([]);
-    const [backupArchiveName, setBackupArchiveName] = useState<string | null>(null);
     const outputRef = React.useRef<HTMLDivElement>(null);
     const outputBufferRef = React.useRef<string[]>([]);
     const flushTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const steps = [
+        { title: 'Stopping server', description: 'Safely stopping the server before making changes...' },
         { title: 'Retrieving files to save', description: 'Analyzing your server files...' },
         { title: 'Deleting files', description: 'Removing files not selected for preservation...' },
         { title: 'Creating backup archive', description: 'Compressing selected files into archive...' },
@@ -309,6 +312,24 @@ export default () => {
         setCompletedSteps((prev) => new Set(prev).add(step));
     };
 
+    const waitForServerOffline = async () => {
+        return new Promise<void>((resolve) => {
+            const checkInterval = setInterval(async () => {
+                try {
+                    const stats = await getServerResourceUsage(uuid);
+                    // Server is offline when power state is 'offline'
+                    if (stats.status === 'offline') {
+                        clearInterval(checkInterval);
+                        resolve();
+                    }
+                } catch (error) {
+                    // If we can't get server status, continue polling
+                    console.error('Failed to check server power state while waiting for offline:', error);
+                }
+            }, 1000);
+        });
+    };
+
     const pollInstallationStatus = async () => {
         return new Promise<void>((resolve) => {
             const checkStatus = async () => {
@@ -341,13 +362,26 @@ export default () => {
         clearFlashes('settings');
 
         try {
-            // Step 0: Retrieving files to save
+            // Step 0: Stopping server
             setCurrentStep(0);
-            const filesToDelete = await getFilesToDelete('/');
+            if (instance && status !== 'offline') {
+                console.log('[GTNH Version Switch] Stopping server before making changes...');
+                instance.send('set state', 'stop');
+                // Wait for the server to be completely offline
+                await waitForServerOffline();
+                console.log('[GTNH Version Switch] Server stopped successfully');
+            } else {
+                console.log('[GTNH Version Switch] Server already offline');
+            }
             markStepComplete(0);
 
-            // Step 1: Deleting files not selected for preservation
+            // Step 1: Retrieving files to save
             setCurrentStep(1);
+            const filesToDelete = await getFilesToDelete('/');
+            markStepComplete(1);
+
+            // Step 2: Deleting files not selected for preservation
+            setCurrentStep(2);
             if (filesToDelete.length > 0) {
                 // Delete in batches to avoid overwhelming the API
                 const batchSize = 50;
@@ -356,10 +390,10 @@ export default () => {
                     await deleteServerFiles(uuid, batch);
                 }
             }
-            markStepComplete(1);
+            markStepComplete(2);
 
-            // Step 2: Creating backup archive of files to keep
-            setCurrentStep(2);
+            // Step 3: Creating backup archive of files to keep
+            setCurrentStep(3);
             let archiveName: string | null = null;
             if (selectedFilePaths.size > 0) {
                 console.log('[GTNH Backup] Creating backup archive of selected files');
@@ -368,30 +402,29 @@ export default () => {
                 const filesToBackup = Array.from(selectedFilePaths).map((path) => path.substring(1)); // Remove leading slash
                 const archive = await compressFiles(uuid, '/', filesToBackup);
                 archiveName = archive.name;
-                setBackupArchiveName(archiveName);
                 console.log('[GTNH Backup] Archive created:', archiveName);
             }
-            markStepComplete(2);
+            markStepComplete(3);
 
-            // Step 3: Changing pack link variable
-            setCurrentStep(3);
+            // Step 4: Changing pack link variable
+            setCurrentStep(4);
 
             // The backend will automatically detect and proxy GitHub artifact URLs
             await updateServerVariable(uuid, 'PACK_LINK', selectedVersion.url);
-            markStepComplete(3);
+            markStepComplete(4);
 
-            // Step 4: Reinstalling - start the reinstall and monitor status
-            setCurrentStep(4);
+            // Step 5: Reinstalling - start the reinstall and monitor status
+            setCurrentStep(5);
             await reinstallServer(uuid);
 
             // Poll until installation is complete
             await pollInstallationStatus();
 
             // Installation complete
-            markStepComplete(4);
+            markStepComplete(5);
 
-            // Step 5: Restoring files from backup archive
-            setCurrentStep(5);
+            // Step 6: Restoring files from backup archive
+            setCurrentStep(6);
             if (archiveName) {
                 console.log('[GTNH Restore] Extracting backup archive:', archiveName);
                 try {
@@ -413,7 +446,7 @@ export default () => {
                     });
                 }
             }
-            markStepComplete(5);
+            markStepComplete(6);
 
             addFlash({
                 key: 'settings',
@@ -479,7 +512,7 @@ export default () => {
                         </p>
                     </div>
 
-                    {installOutput.length > 0 && currentStep === 4 && (
+                    {installOutput.length > 0 && currentStep === 5 && (
                         <InstallOutputContainer>
                             <InstallOutputHeader>
                                 <h4 css={tw`text-sm font-semibold text-neutral-200`}>
