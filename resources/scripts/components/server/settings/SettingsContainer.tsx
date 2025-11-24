@@ -8,6 +8,7 @@ import Can from '@/components/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 import ChangeNestEggBox from '@/components/server/settings/ChangeNestEggBox';
 import GTNHVersionSwitcherBox from '@/components/server/settings/GTNHVersionSwitcherBox';
+import CosmicFrontiersVersionSwitcherBox from '@/components/server/settings/CosmicFrontiersVersionSwitcherBox';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
@@ -83,6 +84,13 @@ export default () => {
                         <Can action={'settings.reinstall'}>
                             <div css={tw`mb-6 md:mb-10`}>
                                 <GTNHVersionSwitcherBox />
+                            </div>
+                        </Can>
+                    )}
+                    {eggName === 'Cosmic Frontiers' && (
+                        <Can action={'settings.reinstall'}>
+                            <div css={tw`mb-6 md:mb-10`}>
+                                <CosmicFrontiersVersionSwitcherBox />
                             </div>
                         </Can>
                     )}

@@ -156,6 +156,10 @@ Route::group([
         // Note: artifact-proxy route is defined in RouteServiceProvider to bypass auth middleware
     });
 
+    Route::group(['prefix' => '/cosmic-frontiers'], function () {
+        Route::get('/versions', [Client\Servers\CosmicFrontiersVersionController::class, 'index']);
+    });
+
     Route::group(['prefix' => '/minecraft-modpacks'], function () {
         Route::get('/', [Client\Servers\ModpackController::class, 'index']);
         Route::get('/versions', [Client\Servers\ModpackController::class, 'versions']);

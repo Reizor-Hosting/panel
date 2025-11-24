@@ -9,6 +9,7 @@ import StartupContainer from '@/components/server/startup/StartupContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import GTNHFileSelectionContainer from '@/components/server/settings/GTNHFileSelectionContainer';
+import CosmicFrontiersFileSelectionContainer from '@/components/server/settings/CosmicFrontiersFileSelectionContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
@@ -150,6 +151,12 @@ export default {
             permission: 'settings.reinstall',
             name: undefined,
             component: GTNHFileSelectionContainer,
+        },
+        {
+            path: '/settings/cosmic-frontiers-files',
+            permission: 'settings.reinstall',
+            name: undefined,
+            component: CosmicFrontiersFileSelectionContainer,
         },
         {
             path: '/activity',

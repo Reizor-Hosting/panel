@@ -239,6 +239,7 @@ Route::group(['prefix' => 'nests'], function () {
 Route::group(['prefix' => 'gtnh'], function () {
     Route::get('/', [Admin\GTNHController::class, 'index'])->name('admin.gtnh');
     Route::post('/clear-cache', [Admin\GTNHController::class, 'clearCache'])->name('admin.gtnh.clear-cache');
+    Route::post('/clear-cosmic-frontiers-cache', [Admin\GTNHController::class, 'clearCosmicFrontiersCache'])->name('admin.gtnh.clear-cosmic-frontiers-cache');
 });
 
 include 'admin-serversplitter.php';

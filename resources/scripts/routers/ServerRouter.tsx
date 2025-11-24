@@ -113,7 +113,8 @@ export default () => {
                     <WebsocketHandler />
                     {inConflictState &&
                     !location.pathname.endsWith(`/server/${id}`) &&
-                    !location.pathname.includes('/settings/gtnh-files') ? (
+                    !location.pathname.includes('/settings/gtnh-files') &&
+                    !location.pathname.includes('/settings/cosmic-frontiers-files') ? (
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>

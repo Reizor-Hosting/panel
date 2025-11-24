@@ -29,5 +29,16 @@ class GTNHController extends Controller
 
         return redirect()->route('admin.gtnh')->with('success', 'GTNH version cache cleared successfully. New versions will be fetched on next request.');
     }
+
+    /**
+     * Clear the Cosmic Frontiers version cache.
+     */
+    public function clearCosmicFrontiersCache(): RedirectResponse
+    {
+        Cache::forget('cosmic_frontiers.versions.stable');
+        Cache::forget('cosmic_frontiers.versions.nightly');
+
+        return redirect()->route('admin.gtnh')->with('success', 'Cosmic Frontiers version cache cleared successfully. New versions will be fetched on next request.');
+    }
 }
 
