@@ -112,11 +112,13 @@ const ChangeNestEggBox = () => {
                         disabled={isSubmitting || loadingNests || !values.nestId || eggs.length === 0}
                     >
                         <option value={0}>Select a subtype...</option>
-                        {eggs.map((egg) => (
-                            <option key={egg.id} value={egg.id}>
-                                {egg.name}
-                            </option>
-                        ))}
+                        {eggs
+                            .filter((egg) => egg.name !== 'Minecraft: Java Edition Modpack Installer')
+                            .map((egg) => (
+                                <option key={egg.id} value={egg.id}>
+                                    {egg.name}
+                                </option>
+                            ))}
                     </FormikField>
                 </div>
                 <div css={tw`mt-6 text-right`}>

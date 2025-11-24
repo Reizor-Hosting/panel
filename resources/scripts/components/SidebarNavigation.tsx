@@ -24,6 +24,7 @@ import {
     faDivide,
     faArrowsAlt,
     faServer,
+    faCubes,
 } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -562,6 +563,7 @@ const iconMap: Record<string, any> = {
     Splitter: faServer,
     'API Credentials': faKey,
     'SSH Keys': faFingerprint,
+    Modpacks: faCubes,
 };
 
 interface SidebarNavigationProps {
