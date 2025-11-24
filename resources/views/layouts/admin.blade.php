@@ -129,6 +129,11 @@
                                 <i class="fa fa-cog"></i> <span>GTNH Management</span>
                             </a>
                         </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.cosmic-frontiers') ?: 'active' }}">
+                            <a href="{{ route('admin.cosmic-frontiers') }}">
+                                <i class="fa fa-rocket"></i> <span>Cosmic Frontiers</span>
+                            </a>
+                        </li>
                         <li class="header">AINX ADDONS</li>
                         @foreach (app()->make(\Pterodactyl\BlueprintFramework\Libraries\ExtensionLibrary\Admin\BlueprintAdminLibrary::class)->extensions() as $extension)
                             <li class="{{ !starts_with(Route::currentRouteName(), "admin.extensions.{$extension['identifier']}.index") ?: 'active' }}">
