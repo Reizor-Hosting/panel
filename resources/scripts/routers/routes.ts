@@ -15,6 +15,7 @@ import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer'
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
 import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
 import ServerSplitterContainer from '@/components/server/serversplitter/ServerSplitterContainer';
+import ModpacksContainer from '@/components/server/minecraft-modpacks/ModpacksContainer';
 
 // Each of the router files is already code split out appropriately — so
 // all of the items above will only be loaded in when that router is loaded.
@@ -35,6 +36,7 @@ interface RouteDefinition {
 
 export interface ServerRouteDefinition extends RouteDefinition {
     permission: string | string[] | null;
+    eggIds?: number[];
 }
 
 interface Routes {
@@ -81,6 +83,13 @@ export default {
             permission: 'file.*',
             name: 'Files',
             component: FileManagerContainer,
+        },
+        {
+            path: '/modpacks',
+            permission: 'file.*',
+            name: 'Modpacks',
+            component: ModpacksContainer,
+            eggIds: [21],
         },
         {
             path: '/files/:action(edit|new)',

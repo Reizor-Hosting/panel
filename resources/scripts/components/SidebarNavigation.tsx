@@ -34,6 +34,7 @@ import routes, { ServerRouteDefinition } from '@/routers/routes';
 import { useLocation, Link } from 'react-router-dom';
 import http from '@/api/http';
 import SearchModal from '@/components/dashboard/search/SearchModal';
+import { ServerContext } from '@/state/server';
 
 const SidebarContainer = styled.aside<{ $collapsed: boolean; $isMobile: boolean; $mobileOpen?: boolean }>`
     ${tw`fixed left-0 z-40 transition-all duration-300 ease-in-out overflow-hidden flex flex-col`};
@@ -586,6 +587,8 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
     const isServerPage = location.pathname.startsWith('/server/');
 
+    const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
+
     const handleMobileAction = () => {
         if (onMobileToggle) {
             onMobileToggle();
@@ -700,7 +703,14 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
                                 </NavLinkStyled>
                             </NavItem>
                         )}
-                        {currentRoutes.filter((route) => !!route.name).map(renderRoute)}
+                        {currentRoutes
+                            .filter((route) => !!route.name)
+                            .filter((route) =>
+                                (route as any as ServerRouteDefinition).eggIds && serverEggId
+                                    ? (route as any as ServerRouteDefinition).eggIds?.includes(serverEggId)
+                                    : true
+                            )
+                            .map(renderRoute)}
                         {serverRoutes && rootAdmin && (
                             <NavItem>
                                 <AdminViewLink
